@@ -1,1 +1,8 @@
 OPENROUTER_API_KEY=your_openrouter_key_here
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your_smtp_login
+SMTP_PASS=your_smtp_password
+SMTP_FROM="School Portal <no-reply@example.com>"
+NOTIFY_EMAIL_TO=owner@example.com

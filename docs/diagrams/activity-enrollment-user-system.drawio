@@ -1,0 +1,133 @@
+<mxfile host="app.diagrams.net" agent="Cursor">
+  <diagram id="activity-enroll" name="Диаграмма деятельности - заявка на обучение">
+    <mxGraphModel dx="2175" dy="1143" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1654" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="laneSys" parent="1" style="swimlane;horizontal=0;startSize=36;fillColor=#f5f5f5;strokeColor=#000000;fontStyle=1;fontSize=14;fontFamily=Arial;" value="Система" vertex="1">
+          <mxGeometry height="1320" width="400" x="40" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="sExists" parent="laneSys" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontFamily=Arial;fontSize=12;" value="Пользователь&#xa;существует?" vertex="1">
+          <mxGeometry height="90" width="150" x="70" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="sCreate" parent="laneSys" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Arial;fontSize=12;" value="Создание аккаунта&#xa;и сохранение в БД" vertex="1">
+          <mxGeometry height="50" width="190" x="75" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="sAuth" parent="laneSys" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Arial;fontSize=12;" value="Авторизация пользователя&#xa;(сессионная «cookie»)" vertex="1">
+          <mxGeometry height="50" width="230" x="75" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="sValid" parent="laneSys" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontFamily=Arial;fontSize=12;" value="Все поля&#xa;заполнены верно?" vertex="1">
+          <mxGeometry height="90" width="150" x="115" y="870" as="geometry" />
+        </mxCell>
+        <mxCell id="sError" parent="laneSys" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Arial;fontSize=12;" value="Показать ошибку" vertex="1">
+          <mxGeometry height="45" width="150" x="220" y="1000" as="geometry" />
+        </mxCell>
+        <mxCell id="sDb" parent="laneSys" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Arial;fontSize=12;" value="Создание заявки в БД&#xa;(enrollment_requests)" vertex="1">
+          <mxGeometry height="50" width="210" x="85" y="1080" as="geometry" />
+        </mxCell>
+        <mxCell id="sConfirm" parent="laneSys" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Arial;fontSize=12;" value="Отправка подтверждения&#xa;(уведомление «toast»)" vertex="1">
+          <mxGeometry height="50" width="230" x="75" y="1170" as="geometry" />
+        </mxCell>
+        <mxCell id="laneUser" parent="1" style="swimlane;horizontal=0;startSize=36;fillColor=#f5f5f5;strokeColor=#000000;fontStyle=1;fontSize=14;fontFamily=Arial;" value="Пользователь" vertex="1">
+          <mxGeometry height="1320" width="400" x="440" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="uStart" parent="laneUser" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Arial;fontSize=13;" value="Начало" vertex="1">
+          <mxGeometry height="70" width="70" x="140" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="uLogin" parent="laneUser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Arial;fontSize=12;" value="Ввод «e-mail»&#xa;и пароля" vertex="1">
+          <mxGeometry height="50" width="160" x="95" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="uReg" parent="laneUser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Arial;fontSize=12;" value="Заполнение&#xa;регистрационных данных" vertex="1">
+          <mxGeometry height="50" width="180" x="85" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="uPrograms" parent="laneUser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Arial;fontSize=12;" value="Переход в каталог&#xa;программ (/programs)" vertex="1">
+          <mxGeometry height="50" width="200" x="75" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="uSelect" parent="laneUser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Arial;fontSize=12;" value="Выбор направления&#xa;и программы обучения" vertex="1">
+          <mxGeometry height="50" width="200" x="75" y="610" as="geometry" />
+        </mxCell>
+        <mxCell id="uForm" parent="laneUser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Arial;fontSize=12;" value="Заполнение формы заявки&#xa;(телефон, преподаватель, комментарий)" vertex="1">
+          <mxGeometry height="55" width="240" x="55" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="uSend" parent="laneUser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Arial;fontSize=12;" value="Отправка формы" vertex="1">
+          <mxGeometry height="45" width="140" x="105" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="uRetry" parent="laneUser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Arial;fontSize=12;" value="Исправить форму&#xa;и отправить снова" vertex="1">
+          <mxGeometry height="50" width="180" x="85" y="1020" as="geometry" />
+        </mxCell>
+        <mxCell id="uNotify" parent="laneUser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontFamily=Arial;fontSize=12;" value="Получение уведомления&#xa;об успешной заявке" vertex="1">
+          <mxGeometry height="50" width="210" x="85" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="uEnd" parent="laneUser" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fillColor=#dae8fc;strokeColor=#6c8ebf;fontFamily=Arial;fontSize=13;" value="Конец" vertex="1">
+          <mxGeometry height="70" width="70" x="155" y="1230" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="uStart" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="uLogin">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="uLogin" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="sExists">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="sExists" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;fontFamily=Arial;fontSize=11;" target="uReg" value="Нет">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="uReg" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="sCreate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="sCreate" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="sAuth">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="sExists" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;fontFamily=Arial;fontSize=11;" target="sAuth" value="Да">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="275" />
+              <mxPoint x="320" y="515" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="sAuth" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="uPrograms">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="uPrograms" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="uSelect">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="uSelect" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="uForm">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="uForm" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="uSend">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="uSend" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="sValid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" edge="1" parent="1" source="sValid" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;fontFamily=Arial;fontSize=11;" target="sError" value="Нет">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" edge="1" parent="1" source="sError" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="uRetry">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" edge="1" parent="1" source="uRetry" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="sValid">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="640" y="1100" />
+              <mxPoint x="20" y="1100" />
+              <mxPoint x="20" y="915" />
+              <mxPoint x="190" y="915" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e15" edge="1" parent="1" source="sValid" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;fontFamily=Arial;fontSize=11;" target="sDb" value="Да">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" edge="1" parent="1" source="sDb" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="sConfirm">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e17" edge="1" parent="1" source="sConfirm" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="uNotify">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e18" edge="1" parent="1" source="uNotify" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=classic;rounded=0;" target="uEnd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

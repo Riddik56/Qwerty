@@ -1,0 +1,125 @@
+<mxfile host="app.diagrams.net" agent="Cursor">
+  <diagram id="sys-arch" name="Схема работы системы">
+    <mxGraphModel dx="1414" dy="743" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1280" pageHeight="820" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="L1" parent="1" style="swimlane;horizontal=0;startSize=28;fillColor=#f5f5f5;strokeColor=#000000;fontStyle=1;fontSize=12;fontFamily=Arial;fontColor=#000000;" value="Клиент (браузер)" vertex="1">
+          <mxGeometry height="150" width="1200" x="40" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="l1_html" parent="L1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;align=center;" value="Страницы «React»&lt;br&gt;(маршруты /, /programs, /login, /account…)" vertex="1">
+          <mxGeometry height="60" width="260" x="40" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="l1_js" parent="L1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;align=center;" value="Компоненты&lt;br&gt;«EnrollDialog», «PageShell»" vertex="1">
+          <mxGeometry height="60" width="240" x="330" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="l1_store" parent="L1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;align=center;" value="«cookie» сессии&lt;br&gt;(user_id)" vertex="1">
+          <mxGeometry height="60" width="150" x="600" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="l1_toast" parent="L1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;align=center;" value="Уведомления&lt;br&gt;«toast»" vertex="1">
+          <mxGeometry height="60" width="130" x="780" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="L2" parent="1" style="swimlane;horizontal=0;startSize=28;fillColor=#f5f5f5;strokeColor=#000000;fontStyle=1;fontSize=12;fontFamily=Arial;fontColor=#000000;" value="Сервер приложений" vertex="1">
+          <mxGeometry height="250" width="1200" x="40" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="l2_static" parent="L2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;align=center;" value="Раздача статики&lt;br&gt;«CSS», «HTML», «JS»" vertex="1">
+          <mxGeometry height="55" width="180" x="40" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="l2_api" parent="L2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;align=center;" value="Серверные функции&lt;br&gt;«createServerFn»" vertex="1">
+          <mxGeometry height="55" width="190" x="260" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="l2_portal" parent="L2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;align=center;" value="«portal-db.ts»&lt;br&gt;БД, авторизация, заявки" vertex="1">
+          <mxGeometry height="55" width="190" x="480" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="l2_ai" parent="L2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;align=center;" value="«ai-assistant.ts»&lt;br&gt;ИИ-помощник" vertex="1">
+          <mxGeometry height="55" width="170" x="700" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="l2_session" parent="L2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;align=center;" value="Сессия&lt;br&gt;«httpOnly» «cookie»" vertex="1">
+          <mxGeometry height="55" width="150" x="900" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="l2_router" parent="L2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;align=center;" value="«TanStack Router»&lt;br&gt;«SSR»" vertex="1">
+          <mxGeometry height="50" width="190" x="260" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="l2_dbmod" parent="L2" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;align=center;" value="«db.server.ts»&lt;br&gt;«SQLite»" vertex="1">
+          <mxGeometry height="50" width="190" x="480" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="L3" parent="1" style="swimlane;horizontal=0;startSize=28;fillColor=#f5f5f5;strokeColor=#000000;fontStyle=1;fontSize=12;fontFamily=Arial;fontColor=#000000;" value="Внешние сервисы" vertex="1">
+          <mxGeometry height="140" width="1200" x="40" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="l3_schema" parent="L3" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=10;align=center;dashed=1;" value="«database-schema.sqlite.sql»" vertex="1">
+          <mxGeometry height="45" width="170" x="40" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="l3_sqlite" parent="L3" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;align=center;" value="«SQLite»&lt;br&gt;«portal.db»" vertex="1">
+          <mxGeometry height="85" width="180" x="485" y="42" as="geometry" />
+        </mxCell>
+        <mxCell id="l3_openrouter" parent="L3" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;align=center;" value="API «OpenRouter»" vertex="1">
+          <mxGeometry height="50" width="180" x="695" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l1a" edge="1" parent="1" source="l1_html" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;" target="l1_js">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l1b" edge="1" parent="1" source="l1_js" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;" target="l1_store">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_l1c" edge="1" parent="1" source="l1_js" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;" target="l1_toast">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_down_static" edge="1" parent="1" source="l1_html" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="l2_static">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_down_static_l" connectable="0" parent="e_down_static" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=10;fontFamily=Arial;labelBackgroundColor=#ffffff;" value="HTTP: статика" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint y="-8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_down_api" edge="1" parent="1" source="l1_js" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="l2_api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_down_api_l" connectable="0" parent="e_down_api" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=10;fontFamily=Arial;labelBackgroundColor=#ffffff;" value="HTTP: RPC + «cookie»" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint y="-8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_api_portal" edge="1" parent="1" source="l2_api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="l2_portal">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_portal_ai" edge="1" parent="1" source="l2_portal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="l2_ai">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ai_session" edge="1" parent="1" source="l2_ai" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="l2_session">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_api_router" edge="1" parent="1" source="l2_api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="l2_router">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_portal_db" edge="1" parent="1" source="l2_portal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="l2_dbmod">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_db_sqlite" edge="1" parent="1" source="l2_dbmod" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="l3_sqlite">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_db_sqlite_l" connectable="0" parent="e_db_sqlite" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=10;fontFamily=Arial;labelBackgroundColor=#ffffff;" value="SQL («better-sqlite3»)" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint x="10" y="-6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_ai_or" edge="1" parent="1" source="l2_ai" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;endArrow=classic;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="l3_openrouter">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_ai_or_l" connectable="0" parent="e_ai_or" style="edgeLabel;html=1;align=center;verticalAlign=middle;fontSize=10;fontFamily=Arial;labelBackgroundColor=#ffffff;" value="HTTPS" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint y="-6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_schema_sql" edge="1" parent="1" source="l3_schema" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#666666;endArrow=classic;dashed=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="l3_sqlite">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_schema_l" connectable="0" parent="e_schema_sql" style="edgeLabel;html=1;align=center;fontSize=9;fontFamily=Arial;labelBackgroundColor=#ffffff;" value="инициализация" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

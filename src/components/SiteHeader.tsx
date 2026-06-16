@@ -1,13 +1,31 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { getCurrentUserFn, logoutUserFn } from "@/lib/portal-db";
+import {
+  BookOpen,
+  Bot,
+  Home,
+  LayoutDashboard,
+  LogIn,
+  LogOut,
+  MapPin,
+  Menu,
+  User,
+  UserPlus,
+  Users,
+} from "lucide-react";
+import { getCurrentUserFn, logoutUserFn } from "@/lib/auth-fns";
 
 const nav = [
-  { to: "/", label: "Главная", icon: "fi fi-rr-house-blank" },
-  { to: "/programs", label: "Направления", icon: "fi fi-rr-book-alt" },
-  { to: "/ai", label: "ИИ-помощник", icon: "fi fi-rr-comment-alt" },
-  { to: "/map", label: "Контакты", icon: "fi fi-rr-marker" },
+  { to: "/", label: "Главная", icon: Home },
+  { to: "/programs", label: "Направления", icon: BookOpen },
+  { to: "/ai", label: "ИИ-помощник", icon: Bot },
+  { to: "/map", label: "Контакты", icon: MapPin },
 ] as const;
+
+const baseNavClassName =
+  "rounded-xl px-4 py-2 text-sm font-semibold text-foreground/70 transition hover:bg-white/70 hover:text-foreground";
+const activeNavClassName =
+  "rounded-xl bg-white px-4 py-2 text-sm font-bold text-primary shadow-md shadow-slate-200/70";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -48,17 +66,11 @@ export function SiteHeader() {
           </div>
         </Link>
         <nav className="hidden justify-center gap-2 md:flex">
-          {nav.map((n) => (
-            <Link
-              key={n.to}
-              to={n.to}
-              activeOptions={{ exact: n.to === "/" }}
-              className="rounded-xl px-4 py-2 text-sm font-semibold text-foreground/70 transition hover:bg-white/70 hover:text-foreground"
-              activeProps={{ className: "rounded-xl bg-white px-4 py-2 text-sm font-bold text-primary shadow-md shadow-slate-200/70" }}
-            >
+          {nav.map(({ to, label, icon: Icon }) => (
+            <Link key={to} to={to} preload={false} className={baseNavClassName}>
               <span className="inline-flex items-center gap-2">
-                <i className={n.icon} aria-hidden="true" />
-                {n.label}
+                <Icon className="h-4 w-4" aria-hidden="true" />
+                {label}
               </span>
             </Link>
           ))}
@@ -71,7 +83,7 @@ export function SiteHeader() {
                 className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:text-slate-950"
               >
                 <span className="inline-flex items-center gap-2">
-                  <i className="fi fi-rr-user" aria-hidden="true" />
+                  <User className="h-4 w-4" aria-hidden="true" />
                   Кабинет
                 </span>
               </Link>
@@ -81,7 +93,7 @@ export function SiteHeader() {
                   className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:text-slate-950"
                 >
                   <span className="inline-flex items-center gap-2">
-                    <i className="fi fi-rr-chalkboard-user" aria-hidden="true" />
+                    <Users className="h-4 w-4" aria-hidden="true" />
                     Кабинет преподавателя
                   </span>
                 </Link>
@@ -92,7 +104,7 @@ export function SiteHeader() {
                   className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:text-slate-950"
                 >
                   <span className="inline-flex items-center gap-2">
-                    <i className="fi fi-rr-dashboard-panel" aria-hidden="true" />
+                    <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
                     Админ-панель
                   </span>
                 </Link>
@@ -103,7 +115,7 @@ export function SiteHeader() {
                 className="rounded-2xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-slate-300/70 transition hover:-translate-y-0.5 hover:bg-primary"
               >
                 <span className="inline-flex items-center gap-2">
-                  <i className="fi fi-rr-exit" aria-hidden="true" />
+                  <LogOut className="h-4 w-4" aria-hidden="true" />
                   Выйти
                 </span>
               </button>
@@ -115,7 +127,7 @@ export function SiteHeader() {
                 className="rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:text-slate-950"
               >
                 <span className="inline-flex items-center gap-2">
-                  <i className="fi fi-rr-sign-in-alt" aria-hidden="true" />
+                  <LogIn className="h-4 w-4" aria-hidden="true" />
                   Войти
                 </span>
               </Link>
@@ -124,7 +136,7 @@ export function SiteHeader() {
                 className="rounded-2xl bg-slate-950 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-slate-300/70 transition hover:-translate-y-0.5 hover:bg-primary"
               >
                 <span className="inline-flex items-center gap-2">
-                  <i className="fi fi-rr-user-add" aria-hidden="true" />
+                  <UserPlus className="h-4 w-4" aria-hidden="true" />
                   Регистрация
                 </span>
               </Link>
@@ -136,22 +148,25 @@ export function SiteHeader() {
           onClick={() => setOpen((v) => !v)}
           aria-label="Меню"
         >
-          Меню
+          <span className="inline-flex items-center gap-2">
+            <Menu className="h-4 w-4" />
+            Меню
+          </span>
         </button>
       </div>
       {open && (
         <div className="glass mx-auto mt-2 grid max-w-7xl gap-1 p-2 md:hidden">
-          {nav.map((n) => (
+          {nav.map(({ to, label, icon: Icon }) => (
             <Link
-              key={n.to}
-              to={n.to}
+              key={to}
+              to={to}
+              preload={false}
               onClick={() => setOpen(false)}
               className="rounded-xl px-4 py-3 text-sm font-medium hover:bg-white/60"
-              activeProps={{ className: "rounded-xl bg-white/70 px-4 py-3 text-sm font-semibold text-primary" }}
             >
               <span className="inline-flex items-center gap-2">
-                <i className={n.icon} aria-hidden="true" />
-                {n.label}
+                <Icon className="h-4 w-4" aria-hidden="true" />
+                {label}
               </span>
             </Link>
           ))}
@@ -206,7 +221,7 @@ export function SiteHeader() {
                 <Link
                   to="/register"
                   onClick={() => setOpen(false)}
-                  className="rounded-xl bg-slate-950 px-4 py-3 text-center text-sm font-bold text-white"
+                  className="rounded-xl px-4 py-3 text-center text-sm font-bold text-white bg-slate-950"
                 >
                   Регистрация
                 </Link>

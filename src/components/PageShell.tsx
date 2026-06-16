@@ -4,9 +4,9 @@ import { SiteFooter } from "./SiteFooter";
 
 export function PageShell({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen grid-bg">
+    <div className="min-h-screen grid-bg flex flex-col">
       <SiteHeader />
-      <main className="px-3 sm:px-6 mt-8">{children}</main>
+      <main className="px-3 sm:px-6 mt-8 flex-1">{children}</main>
       <SiteFooter />
     </div>
   );

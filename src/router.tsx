@@ -58,8 +58,8 @@ export const getRouter = () => {
   const router = createRouter({
     routeTree,
     context: {},
-    scrollRestoration: true,
-    defaultPreloadStaleTime: 0,
+    scrollRestoration: false,
+    defaultPreload: false,
     defaultErrorComponent: DefaultErrorComponent,
   });
 

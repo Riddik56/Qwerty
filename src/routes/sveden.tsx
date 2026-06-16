@@ -1,6 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { PageShell } from "@/components/PageShell";
-
+import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/sveden")({
   head: () => ({
     meta: [
@@ -122,6 +121,7 @@ const facts = [
 function Sveden() {
   return (
     <PageShell>
+      <div>
       <section className="mx-auto max-w-7xl">
         <div className="relative overflow-hidden rounded-[2rem] bg-slate-950 p-8 text-white shadow-2xl shadow-slate-400/30 sm:p-12">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(59,130,246,0.45),transparent_30%),radial-gradient(circle_at_90%_0%,rgba(14,165,233,0.3),transparent_28%),linear-gradient(135deg,#020617,#0f172a_55%,#172554)]" />
@@ -179,6 +179,7 @@ function Sveden() {
           ))}
         </div>
       </section>
+      </div>
     </PageShell>
   );
 }

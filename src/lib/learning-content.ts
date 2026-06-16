@@ -25,7 +25,7 @@ export const DIRECTIONS_CONTENT: DirectionContent[] = [
   {
     key: "accounting",
     title: "Бухгалтерский учет",
-    keywords: ["бухгалтер", "учет", "налог", "отчетност"],
+    keywords: ["бухгалтер", "учет", "налог", "отчетност", "первич", "инвентаризац", "дебет", "кредит"],
     theory: [
       {
         title: "Основы бухгалтерского учета",
@@ -61,7 +61,7 @@ export const DIRECTIONS_CONTENT: DirectionContent[] = [
   {
     key: "audit",
     title: "Анализ и аудит",
-    keywords: ["аудит", "анализ", "рисков", "финансов"],
+    keywords: ["аудит", "анализ", "финансов", "коэффициент", "ликвидност", "рентабельност", "существенност", "внутренн"],
     theory: [
       { title: "Финансовый анализ", text: "Финансовый анализ оценивает устойчивость, ликвидность, рентабельность и оборачиваемость. Используются горизонтальный, вертикальный и коэффициентный методы." },
       { title: "Внутренний аудит", text: "Внутренний аудит проверяет корректность процессов и соблюдение внутренних регламентов. Результатом являются рекомендации по снижению рисков и повышению эффективности." },
@@ -88,7 +88,7 @@ export const DIRECTIONS_CONTENT: DirectionContent[] = [
   {
     key: "safety",
     title: "Охрана труда",
-    keywords: ["охрана труда", "инструктаж", "рисков", "несчаст"],
+    keywords: ["охрана труда", "инструктаж", "несчаст", "сиз", "травматизм", "безопасн"],
     theory: [
       { title: "Требования охраны труда", text: "Система охраны труда включает политику безопасности, локальные акты, обучение персонала и контроль условий труда." },
       { title: "Инструктажи и обучение", text: "Проводятся вводный, первичный, повторный, внеплановый и целевой инструктажи. Факт прохождения фиксируется в журналах." },
@@ -179,4 +179,33 @@ export function resolveDirectionByCourseTitle(courseTitle: string): DirectionCon
 
 export function getDirectionByKey(key: DirectionKey): DirectionContent | null {
   return DIRECTIONS_CONTENT.find((direction) => direction.key === key) ?? null;
+}
+
+export function resolveDirectionByTitle(title: string): DirectionContent | null {
+  const lower = title.toLowerCase().trim();
+  return (
+    DIRECTIONS_CONTENT.find((direction) => direction.title.toLowerCase() === lower) ??
+    DIRECTIONS_CONTENT.find((direction) => lower.includes(direction.title.toLowerCase())) ??
+    null
+  );
+}
+
+export function resolveDirectionByText(text: string): DirectionContent | null {
+  const lower = text.toLowerCase();
+  let best: DirectionContent | null = null;
+  let bestScore = 0;
+
+  for (const direction of DIRECTIONS_CONTENT) {
+    let score = 0;
+    if (lower.includes(direction.title.toLowerCase())) score += 10;
+    for (const keyword of direction.keywords) {
+      if (lower.includes(keyword)) score += 1;
+    }
+    if (score > bestScore) {
+      best = direction;
+      bestScore = score;
+    }
+  }
+
+  return bestScore > 0 ? best : null;
 }

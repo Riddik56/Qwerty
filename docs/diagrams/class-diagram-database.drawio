@@ -1,0 +1,308 @@
+<mxfile host="app.diagrams.net" agent="Cursor">
+  <diagram id="class-db" name="Диаграмма классов - БД">
+    <mxGraphModel dx="602" dy="316" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="roles" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;spacingLeft=6;spacingTop=4;" value="&lt;b&gt;Роль (Role)&lt;/b&gt;&lt;hr size=&quot;1&quot;&gt;PK role_id: целое&lt;br&gt;role_name: строка&lt;br&gt;description: строка" vertex="1">
+          <mxGeometry height="95" width="200" x="294.72222222222223" as="geometry" />
+        </mxCell>
+        <mxCell id="users" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;spacingLeft=6;spacingTop=4;" value="&lt;b&gt;Пользователь (User)&lt;/b&gt;&lt;hr&gt;PK user_id: целое&lt;br&gt;FK role_id: целое&lt;br&gt;full_name: строка&lt;br&gt;email: строка&lt;br&gt;phone: строка&lt;br&gt;password_hash: строка&lt;br&gt;account_status: строка&lt;br&gt;created_at: дата и время" vertex="1">
+          <mxGeometry height="175" width="220" x="284.72222222222223" y="195" as="geometry" />
+        </mxCell>
+        <mxCell id="logs" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;spacingLeft=6;spacingTop=4;" value="&lt;b&gt;Журнал действий (ActivityLog)&lt;/b&gt;&lt;hr&gt;PK log_id: целое&lt;br&gt;FK user_id: целое&lt;br&gt;action_type: строка&lt;br&gt;action_description: текст&lt;br&gt;created_at: дата и время" vertex="1">
+          <mxGeometry height="120" width="220" x="285" y="507.5" as="geometry" />
+        </mxCell>
+        <mxCell id="cats" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;spacingLeft=6;spacingTop=4;" value="&lt;b&gt;Категория курсов (CourseCategory)&lt;/b&gt;&lt;hr&gt;PK category_id: целое&lt;br&gt;category_name: строка&lt;br&gt;description: строка" vertex="1">
+          <mxGeometry height="95" width="240" x="540" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="courses" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;spacingLeft=6;spacingTop=4;" value="&lt;b&gt;Курс (Course)&lt;/b&gt;&lt;hr&gt;PK course_id: целое&lt;br&gt;FK category_id: целое&lt;br&gt;FK teacher_id: целое&lt;br&gt;title: строка&lt;br&gt;short_description: строка&lt;br&gt;duration_hours: целое&lt;br&gt;price: число&lt;br&gt;course_status: строка&lt;br&gt;created_at: дата и время" vertex="1">
+          <mxGeometry height="195" width="250" x="535" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="requests" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;spacingLeft=6;spacingTop=4;" value="&lt;b&gt;Заявка на обучение (EnrollmentRequest)&lt;/b&gt;&lt;hr&gt;PK request_id: целое&lt;br&gt;FK course_id: целое&lt;br&gt;FK user_id: целое&lt;br&gt;applicant_name: строка&lt;br&gt;applicant_email: строка&lt;br&gt;applicant_phone: строка&lt;br&gt;comment: текст&lt;br&gt;request_status: строка&lt;br&gt;created_at: дата и время" vertex="1">
+          <mxGeometry height="175" width="250" y="765" as="geometry" />
+        </mxCell>
+        <mxCell id="enroll" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;spacingLeft=6;spacingTop=4;" value="&lt;b&gt;Зачисление (Enrollment)&lt;/b&gt;&lt;hr&gt;PK enrollment_id: целое&lt;br&gt;FK user_id: целое&lt;br&gt;FK course_id: целое&lt;br&gt;enrollment_status: строка&lt;br&gt;progress_percent: число&lt;br&gt;enrolled_at: дата и время&lt;br&gt;completed_at: дата и время" vertex="1">
+          <mxGeometry height="155" width="250" x="280" y="775" as="geometry" />
+        </mxCell>
+        <mxCell id="access" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;spacingLeft=6;spacingTop=4;" value="&lt;b&gt;Доступ к контенту (StudentContentAccess)&lt;/b&gt;&lt;hr&gt;PK user_id, course_id, content_type&lt;br&gt;FK user_id: целое&lt;br&gt;FK course_id: целое&lt;br&gt;content_type: строка&lt;br&gt;is_enabled: логический&lt;br&gt;updated_at: дата и время" vertex="1">
+          <mxGeometry height="130" width="220" x="820" y="787.5" as="geometry" />
+        </mxCell>
+        <mxCell id="modules" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;spacingLeft=6;spacingTop=4;" value="&lt;b&gt;Модуль курса (CourseModule)&lt;/b&gt;&lt;hr&gt;PK module_id: целое&lt;br&gt;FK course_id: целое&lt;br&gt;module_title: строка&lt;br&gt;module_description: строка&lt;br&gt;sort_order: целое" vertex="1">
+          <mxGeometry height="120" width="230" x="560" y="792.5" as="geometry" />
+        </mxCell>
+        <mxCell id="materials" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;spacingLeft=6;spacingTop=4;" value="&lt;b&gt;Учебный материал (LearningMaterial)&lt;/b&gt;&lt;hr&gt;PK material_id: целое&lt;br&gt;FK module_id: целое&lt;br&gt;material_title: строка&lt;br&gt;material_type: строка&lt;br&gt;material_url: строка&lt;br&gt;material_content: текст&lt;br&gt;sort_order: целое" vertex="1">
+          <mxGeometry height="145" width="230" x="554.9974389648437" y="980" as="geometry" />
+        </mxCell>
+        <mxCell id="progress" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=11;spacingLeft=6;spacingTop=4;" value="&lt;b&gt;Прогресс обучения (CourseProgress)&lt;/b&gt;&lt;hr&gt;PK progress_id: целое&lt;br&gt;FK enrollment_id: целое&lt;br&gt;FK material_id: целое&lt;br&gt;is_completed: логический&lt;br&gt;completed_at: дата и время" vertex="1">
+          <mxGeometry height="115" width="230" x="420.0017419433594" y="1290" as="geometry" />
+        </mxCell>
+        <mxCell id="r1" edge="1" parent="1" source="roles" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="users">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="394.72222222222223" y="107" />
+              <mxPoint x="394.72222222222223" y="183" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m1" connectable="0" parent="r1" style="edgeLabel;html=1;fontFamily=Arial;fontSize=11;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.7" as="geometry">
+            <mxPoint x="8" y="-12" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="m1b" connectable="0" parent="r1" style="edgeLabel;html=1;fontFamily=Arial;fontSize=11;" value="*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry">
+            <mxPoint x="-8" y="8" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r2" edge="1" parent="1" source="users" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="logs">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="394.72222222222223" y="386" />
+              <mxPoint x="395" y="458" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r2a" connectable="0" parent="r2" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="1" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r2b" connectable="0" parent="r2" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="0..*" vertex="1">
+          <mxGeometry relative="1" x="0.85" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r3" edge="1" parent="1" source="cats" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="courses">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="382" />
+              <mxPoint x="720" y="458" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r3a" connectable="0" parent="r3" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.6" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r3b" connectable="0" parent="r3" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="*" vertex="1">
+          <mxGeometry relative="1" x="0.75" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r4" edge="1" parent="1" source="courses" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="modules">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="690" y="679" />
+              <mxPoint x="675" y="753" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r4a" connectable="0" parent="r4" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="1" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r4b" connectable="0" parent="r4" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="*" vertex="1">
+          <mxGeometry relative="1" x="0.85" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r5" edge="1" parent="1" source="modules" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="materials">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="675" y="952" />
+              <mxPoint x="640" y="950" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r5a" connectable="0" parent="r5" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="1" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r5b" connectable="0" parent="r5" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="*" vertex="1">
+          <mxGeometry relative="1" x="0.85" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r6" edge="1" parent="1" source="users" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="requests">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="310.72222222222223" y="382" />
+              <mxPoint x="225" y="420" />
+              <mxPoint x="225" y="715" />
+              <mxPoint x="65" y="753" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r6a" connectable="0" parent="r6" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="1" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r6b" connectable="0" parent="r6" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="*" vertex="1">
+          <mxGeometry relative="1" x="0.9" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r7" edge="1" parent="1" source="courses" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="requests">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="677" />
+              <mxPoint x="185" y="753" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r7a" connectable="0" parent="r7" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="1" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r7b" connectable="0" parent="r7" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="*" vertex="1">
+          <mxGeometry relative="1" x="0.85" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r8" edge="1" parent="1" source="users" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="enroll">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="352.72222222222223" y="384" />
+              <mxPoint x="255" y="420" />
+              <mxPoint x="255" y="715" />
+              <mxPoint x="345" y="753" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r8a" connectable="0" parent="r8" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="1" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r8b" connectable="0" parent="r8" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="*" vertex="1">
+          <mxGeometry relative="1" x="0.92" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r9" edge="1" parent="1" source="courses" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="enroll">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="630" y="679" />
+              <mxPoint x="465" y="753" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r9a" connectable="0" parent="r9" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="1" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r9b" connectable="0" parent="r9" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="*" vertex="1">
+          <mxGeometry relative="1" x="0.85" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r10" edge="1" parent="1" source="enroll" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="progress">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="405" y="952" />
+              <mxPoint x="454.93743896484375" y="990" />
+              <mxPoint x="454.93743896484375" y="1235" />
+              <mxPoint x="471.6917419433594" y="1273" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r10a" connectable="0" parent="r10" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="1" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r10b" connectable="0" parent="r10" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="*" vertex="1">
+          <mxGeometry relative="1" x="0.9" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r11" edge="1" parent="1" source="materials" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="progress">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="599.9374389648438" y="1197" />
+              <mxPoint x="581.6917419433594" y="1273" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r11a" connectable="0" parent="r11" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="1" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r11b" connectable="0" parent="r11" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="*" vertex="1">
+          <mxGeometry relative="1" x="0.85" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r12" edge="1" parent="1" source="users" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="access">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="478.72222222222223" y="382" />
+              <mxPoint x="815" y="420" />
+              <mxPoint x="815" y="715" />
+              <mxPoint x="982.5" y="753" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r12a" connectable="0" parent="r12" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="1" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r12b" connectable="0" parent="r12" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="*" vertex="1">
+          <mxGeometry relative="1" x="0.85" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r13" edge="1" parent="1" source="courses" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;dashed=1;noEdgeStyle=1;orthogonal=1;" target="access">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="750" y="677" />
+              <mxPoint x="877.5" y="753" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r13a" connectable="0" parent="r13" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="1" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r13b" connectable="0" parent="r13" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="*" vertex="1">
+          <mxGeometry relative="1" x="0.9" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r14" edge="1" parent="1" source="users" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=none;startArrow=diamondThin;startFill=0;rounded=0;dashed=1;noEdgeStyle=1;orthogonal=1;" target="courses">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="436.72222222222223" y="384" />
+              <mxPoint x="600" y="458" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r14lbl" connectable="0" parent="r14" style="edgeLabel;html=1;fontSize=10;fontFamily=Arial;" value="преподаватель (teacher_id)" vertex="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="-10" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r14a" connectable="0" parent="r14" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="1" vertex="1">
+          <mxGeometry relative="1" x="-0.2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r14b" connectable="0" parent="r14" style="edgeLabel;html=1;fontSize=11;fontFamily=Arial;" value="*" vertex="1">
+          <mxGeometry relative="1" x="0.8" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

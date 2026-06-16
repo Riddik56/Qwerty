@@ -1,10 +1,36 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { toast } from "sonner";
 import { PageShell } from "@/components/PageShell";
-import { askAiAssistantFn } from "@/lib/ai-assistant";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 type Message = { role: "user" | "assistant"; content: string };
+const CHAT_STORAGE_KEY = "interactive-ai-chat-history-v1";
+const MAX_STORED_MESSAGES = 50;
+const INITIAL_ASSISTANT_MESSAGE: Message = {
+  role: "assistant",
+  content: "Здравствуйте! Я ИИ-помощник платформы. Могу помочь с выбором направления и обучением.",
+};
+
+function sanitizeMessages(raw: unknown): Message[] {
+  if (!Array.isArray(raw)) return [INITIAL_ASSISTANT_MESSAGE];
+  const cleaned = raw
+    .filter((m): m is Message => {
+      return (
+        typeof m === "object" &&
+        m !== null &&
+        (m as Message).role !== undefined &&
+        ((m as Message).role === "user" || (m as Message).role === "assistant") &&
+        typeof (m as Message).content === "string"
+      );
+    })
+    .map((m) => ({
+      role: m.role,
+      content: m.content.slice(0, 4000),
+    }))
+    .slice(-MAX_STORED_MESSAGES);
+
+  return cleaned.length > 0 ? cleaned : [INITIAL_ASSISTANT_MESSAGE];
+}
 
 export const Route = createFileRoute("/ai")({
   head: () => ({
@@ -14,14 +40,27 @@ export const Route = createFileRoute("/ai")({
 });
 
 function AiPage() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: "assistant",
-      content: "Здравствуйте! Я ИИ-помощник платформы. Могу помочь с выбором направления и обучением.",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (typeof window === "undefined") return [INITIAL_ASSISTANT_MESSAGE];
+    try {
+      const raw = window.localStorage.getItem(CHAT_STORAGE_KEY);
+      if (!raw) return [INITIAL_ASSISTANT_MESSAGE];
+      return sanitizeMessages(JSON.parse(raw));
+    } catch {
+      return [INITIAL_ASSISTANT_MESSAGE];
+    }
+  });
   const [input, setInput] = useState("");
   const [pending, setPending] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages.slice(-MAX_STORED_MESSAGES)));
+    } catch {
+      // Ignore quota/storage errors and keep chat working in memory.
+    }
+  }, [messages]);
 
   const send = async () => {
     const text = input.trim();
@@ -32,6 +71,7 @@ function AiPage() {
     const newHistory = [...messages, userMessage];
     setMessages(newHistory);
     try {
+      const { askAiAssistantFn } = await import("@/lib/ai-assistant");
       const result = await askAiAssistantFn({
         data: {
           message: text,
@@ -53,6 +93,13 @@ function AiPage() {
         <div className="rounded-[2rem] border border-white/70 bg-white/85 p-6 shadow-xl backdrop-blur sm:p-8">
           <h1 className="font-display text-3xl font-extrabold">ИИ-помощник</h1>
           <p className="mt-2 text-sm text-muted-foreground">Чат работает через OpenRouter (DeepSeek Chat v3).</p>
+          <button
+            type="button"
+            className="mt-3 text-xs text-muted-foreground underline-offset-4 hover:underline"
+            onClick={() => setMessages([INITIAL_ASSISTANT_MESSAGE])}
+          >
+            Очистить историю чата
+          </button>
 
           <div className="mt-6 grid max-h-[55vh] gap-3 overflow-auto rounded-2xl bg-slate-50 p-4">
             {messages.map((m, idx) => (

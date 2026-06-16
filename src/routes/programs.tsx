@@ -1,7 +1,11 @@
+import { PageShell } from "@/components/PageShell";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { PageShell } from "@/components/PageShell";
 import { EnrollDialog } from "@/components/EnrollDialog";
+
+function directionAnchor(accent: string) {
+  return `direction-${accent}`;
+}
 
 export const Route = createFileRoute("/programs")({
   head: () => ({
@@ -84,6 +88,7 @@ function Programs() {
 
   return (
     <PageShell>
+      <div>
       <section className="mx-auto max-w-7xl">
         <div className="relative overflow-hidden rounded-[2rem] bg-slate-950 text-white shadow-2xl shadow-slate-400/30">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(59,130,246,0.45),transparent_32%),radial-gradient(circle_at_88%_12%,rgba(20,184,166,0.28),transparent_30%),linear-gradient(135deg,#020617,#0f172a_55%,#172554)]" />
@@ -122,7 +127,7 @@ function Programs() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {directions.slice(0, 4).map((direction) => (
-              <a key={direction.title} href={`#${direction.accent}`} className="group rounded-3xl border border-white/70 bg-white/75 p-5 shadow-lg shadow-slate-200/60 backdrop-blur transition hover:-translate-y-1 hover:bg-white">
+              <a key={direction.title} href={`#${directionAnchor(direction.accent)}`} className="group rounded-3xl border border-white/70 bg-white/75 p-5 shadow-lg shadow-slate-200/60 backdrop-blur transition hover:-translate-y-1 hover:bg-white">
                 <div className="flex items-center justify-between">
                   <span className="rounded-2xl bg-slate-950 px-3 py-2 font-display text-sm font-bold text-white">{direction.accent}</span>
                   <span className="text-2xl text-primary transition group-hover:translate-x-1">→</span>
@@ -139,7 +144,7 @@ function Programs() {
         {directions.map((direction, index) => (
           <article
             key={direction.title}
-            id={direction.accent}
+            id={directionAnchor(direction.accent)}
             className={`scroll-mt-32 overflow-hidden rounded-[2rem] shadow-xl shadow-slate-200/60 ${
               index % 2 === 0 ? "bg-white/85 text-foreground" : "bg-slate-950 text-white"
             }`}
@@ -222,7 +227,10 @@ function Programs() {
         </div>
       </section>
 
-      <EnrollDialog open={!!enrollFor} program={enrollFor} onClose={() => setEnrollFor(null)} />
+      {enrollFor ? (
+        <EnrollDialog open program={enrollFor} onClose={() => setEnrollFor(null)} />
+      ) : null}
+      </div>
     </PageShell>
   );
 }

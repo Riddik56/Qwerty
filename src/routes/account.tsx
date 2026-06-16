@@ -1,6 +1,6 @@
+import { PageShell } from "@/components/PageShell";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
-import { PageShell } from "@/components/PageShell";
 import { getCurrentUserFn, getMyCoursesFn } from "@/lib/portal-db";
 
 const roleCapabilities = {

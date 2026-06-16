@@ -28,6 +28,21 @@ try {
       FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
     );
   `);
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS student_module_results (
+      user_id INTEGER NOT NULL,
+      direction_key TEXT NOT NULL,
+      content_type TEXT NOT NULL CHECK (content_type IN ('test', 'final_test')),
+      module_index INTEGER NOT NULL CHECK (module_index >= 0),
+      score INTEGER NOT NULL DEFAULT 0 CHECK (score >= 0),
+      total_questions INTEGER NOT NULL DEFAULT 1 CHECK (total_questions > 0),
+      is_passed INTEGER NOT NULL DEFAULT 0 CHECK (is_passed IN (0, 1)),
+      updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (user_id, direction_key, content_type, module_index),
+      FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+    );
+  `);
 } catch (e) {
   console.error("DB Init Error:", e);
 }

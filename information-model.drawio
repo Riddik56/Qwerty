@@ -1,0 +1,73 @@
+<mxfile host="app.diagrams.net" modified="2026-05-13T11:01:00.000Z" agent="Cascade" version="24.7.17" type="device">
+  <diagram name="Information Model" id="information-model-liquid-school-bw">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Приложение Б — Информационная модель" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=18;fontStyle=1;fontColor=#000000" vertex="1" parent="1">
+          <mxGeometry x="330" y="20" width="500" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="portal" value="educationalPortal&#xa;-------------------------&#xa;portal_id (PK)&#xa;name&#xa;description" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=12;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="485" y="70" width="190" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="user" value="user&#xa;-------------------------&#xa;user_id (PK)&#xa;role_id (FK)&#xa;fullName&#xa;email&#xa;phone&#xa;password" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=12;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="185" y="230" width="190" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="role" value="role&#xa;-------------------------&#xa;role_id (PK)&#xa;role_name&#xa;permissions&#xa;&#xa;student&#xa;teacher&#xa;admin" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=12;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="55" y="80" width="170" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="course" value="course&#xa;-------------------------&#xa;course_id (PK)&#xa;title&#xa;description&#xa;category&#xa;duration&#xa;price" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=12;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="485" y="245" width="190" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="enrollment" value="enrollment&#xa;-------------------------&#xa;enrollment_id (PK)&#xa;user_id (FK)&#xa;course_id (FK)&#xa;name&#xa;email&#xa;phone&#xa;comment&#xa;status&#xa;createdAt" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=12;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="810" y="210" width="205" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="progress" value="learningProgress&#xa;-------------------------&#xa;progress_id (PK)&#xa;user_id (FK)&#xa;course_id (FK)&#xa;progressPercent&#xa;status&#xa;updatedAt" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=12;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="485" y="500" width="205" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="review" value="review&#xa;-------------------------&#xa;review_id (PK)&#xa;authorName&#xa;role&#xa;text&#xa;createdAt" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=12;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="165" y="515" width="185" height="115" as="geometry" />
+        </mxCell>
+        <mxCell id="contact" value="contactMessage&#xa;-------------------------&#xa;message_id (PK)&#xa;name&#xa;email&#xa;phone&#xa;message&#xa;createdAt" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=12;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="815" y="500" width="200" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="stats" value="adminStatistics&#xa;-------------------------&#xa;totalUsers&#xa;totalStudents&#xa;totalTeachers&#xa;activeCourses&#xa;totalEnrollments" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;fontColor=#000000;fontSize=12;align=left;verticalAlign=top;spacingLeft=8;spacingTop=6" vertex="1" parent="1">
+          <mxGeometry x="475" y="675" width="220" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-portal-user" value="contains" style="endArrow=none;html=1;rounded=0;strokeColor=#000000;fontColor=#000000;fontSize=11" edge="1" parent="1" source="portal" target="user">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-portal-course" value="contains" style="endArrow=none;html=1;rounded=0;strokeColor=#000000;fontColor=#000000;fontSize=11" edge="1" parent="1" source="portal" target="course">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-user-role" value="has" style="endArrow=none;html=1;rounded=0;strokeColor=#000000;fontColor=#000000;fontSize=11" edge="1" parent="1" source="user" target="role">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-user-enrollment" value="creates" style="endArrow=none;html=1;rounded=0;strokeColor=#000000;fontColor=#000000;fontSize=11" edge="1" parent="1" source="user" target="enrollment">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-course-enrollment" value="selected in" style="endArrow=none;html=1;rounded=0;strokeColor=#000000;fontColor=#000000;fontSize=11" edge="1" parent="1" source="course" target="enrollment">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-user-progress" value="has" style="endArrow=none;html=1;rounded=0;strokeColor=#000000;fontColor=#000000;fontSize=11" edge="1" parent="1" source="user" target="progress">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-course-progress" value="belongs to" style="endArrow=none;html=1;rounded=0;strokeColor=#000000;fontColor=#000000;fontSize=11" edge="1" parent="1" source="course" target="progress">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-course-review" value="appears in" style="endArrow=none;html=1;rounded=0;strokeColor=#000000;fontColor=#000000;fontSize=11" edge="1" parent="1" source="course" target="review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-user-contact" value="sends" style="endArrow=none;html=1;rounded=0;strokeColor=#000000;fontColor=#000000;fontSize=11" edge="1" parent="1" source="user" target="contact">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-stats-user" value="based on" style="endArrow=none;html=1;rounded=0;strokeColor=#000000;fontColor=#000000;fontSize=11" edge="1" parent="1" source="stats" target="user">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel-stats-enrollment" value="based on" style="endArrow=none;html=1;rounded=0;strokeColor=#000000;fontColor=#000000;fontSize=11" edge="1" parent="1" source="stats" target="enrollment">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

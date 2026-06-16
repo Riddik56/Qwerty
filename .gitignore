@@ -15,6 +15,14 @@ dist-ssr
 .tanstack/**
 .nitro
 *.local
+portal.db
+
+# Generated material mirror (built from docs/materials at runtime)
+public/materials/
+
+# Large media files (GitHub limit 100 MB)
+docs/materials/**/*.mp4
+docs/materials/**/Материал.zip
 
 # Wrangler / Cloudflare
 .wrangler/

@@ -1,81 +1,16 @@
-import { randomBytes, scryptSync, timingSafeEqual } from "crypto";
 import { createServerFn } from "@tanstack/react-start";
-import { deleteCookie, getCookie, setCookie } from "@tanstack/react-start/server";
-import type { UserRole } from "./portal-db-types";
+import type { SessionDbUser, UserRole } from "./portal-db-types";
 
-type DbUser = {
-  user_id: number;
-  full_name: string;
-  email: string;
-  phone: string | null;
-  password_hash: string;
-  role_name: UserRole;
-  account_status: "active" | "blocked" | "pending";
-};
+export { getCurrentUserFn, logoutUserFn } from "./auth-fns";
+
+type DbUser = SessionDbUser;
 type EnrollmentRequestStatus = "new" | "approved" | "rejected" | "completed";
-
-const SESSION_COOKIE = "user_id";
-
-function hashPassword(password: string): string {
-  const salt = randomBytes(16).toString("hex");
-  const hash = scryptSync(password, salt, 64).toString("hex");
-  return `scrypt$${salt}$${hash}`;
-}
-
-function verifyPassword(password: string, storedHash: string): boolean {
-  if (storedHash.startsWith("scrypt$")) {
-    const [, salt, hash] = storedHash.split("$");
-    if (!salt || !hash) return false;
-    const calculated = scryptSync(password, salt, 64);
-    const stored = Buffer.from(hash, "hex");
-    if (stored.length !== calculated.length) return false;
-    return timingSafeEqual(stored, calculated);
-  }
-
-  // Backward compatibility for legacy demo users.
-  return storedHash === `hashed_${password}`;
-}
-
-function setSessionCookie(userId: number) {
-  setCookie(SESSION_COOKIE, String(userId), {
-    httpOnly: true,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 60 * 24 * 7,
-    path: "/",
-  });
-}
-
-async function requireUser(allowedRoles?: UserRole[]): Promise<DbUser> {
-  const userId = getCookie(SESSION_COOKIE);
-  if (!userId) throw new Error("Требуется авторизация");
-
-  const db = (await import("./db.server")).default;
-  const user = db
-    .prepare(
-      `
-      SELECT u.user_id, u.full_name, u.email, u.phone, u.password_hash, u.account_status, r.role_name
-      FROM users u
-      JOIN roles r ON u.role_id = r.role_id
-      WHERE u.user_id = ?
-    `,
-    )
-    .get(Number(userId)) as DbUser | undefined;
-
-  if (!user || user.account_status !== "active") {
-    throw new Error("Пользователь не найден или заблокирован");
-  }
-
-  if (allowedRoles && !allowedRoles.includes(user.role_name)) {
-    throw new Error("Доступ запрещен для вашей роли");
-  }
-
-  return user;
-}
+type ModuleContentType = "test" | "final_test";
 
 export const loginUserFn = createServerFn({ method: "POST" })
   .inputValidator((data: { email: string; password: string }) => data)
   .handler(async (ctx) => {
+    const { verifyPassword, setSessionCookie } = await import("./portal-session.server");
     const db = (await import("./db.server")).default;
     const user = db
       .prepare(`
@@ -91,32 +26,9 @@ export const loginUserFn = createServerFn({ method: "POST" })
     return { userId: user.user_id, fullName: user.full_name, role: user.role_name };
   });
 
-export const logoutUserFn = createServerFn({ method: "POST" })
-  .handler(async () => {
-    deleteCookie(SESSION_COOKIE, { path: "/" });
-    return { success: true };
-  });
-
-export const getCurrentUserFn = createServerFn({ method: "GET" })
-  .handler(async () => {
-    const userId = getCookie(SESSION_COOKIE);
-    if (!userId) return null;
-
-    const db = (await import("./db.server")).default;
-    const user = db
-      .prepare(`
-      SELECT u.user_id, u.full_name, u.email, u.phone, u.account_status, r.role_name 
-      FROM users u JOIN roles r ON u.role_id = r.role_id 
-      WHERE u.user_id = ?
-    `)
-      .get(Number(userId)) as DbUser | undefined;
-
-    if (!user || user.account_status !== "active") return null;
-    return { userId: user.user_id, fullName: user.full_name, email: user.email, phone: user.phone, role: user.role_name as UserRole };
-  });
-
 export const getMyCoursesFn = createServerFn({ method: "GET" })
   .handler(async () => {
+    const { requireUser } = await import("./portal-session.server");
     const user = await requireUser(["student"]);
 
     const db = (await import("./db.server")).default;
@@ -128,11 +40,18 @@ export const getMyCoursesFn = createServerFn({ method: "GET" })
       JOIN courses c ON e.course_id = c.course_id
       WHERE e.user_id = ?
     `)
-      .all(user.user_id);
+      .all(user.user_id) as Array<{
+      course_id: number;
+      title: string;
+      progress_percent: number;
+      enrollment_status: "active" | "completed" | "cancelled";
+      teacher_name: string | null;
+    }>;
   });
 
 export const getAllUsersFn = createServerFn({ method: "GET" })
   .handler(async () => {
+    const { requireUser } = await import("./portal-session.server");
     await requireUser(["admin"]);
     const db = (await import("./db.server")).default;
     return db
@@ -140,12 +59,19 @@ export const getAllUsersFn = createServerFn({ method: "GET" })
       SELECT u.user_id, u.full_name, u.email, u.phone, r.role_name 
       FROM users u JOIN roles r ON u.role_id = r.role_id
     `)
-      .all();
+      .all() as Array<{
+      user_id: number;
+      full_name: string;
+      email: string;
+      phone: string | null;
+      role_name: UserRole;
+    }>;
   });
 
 export const promoteUserToTeacherFn = createServerFn({ method: "POST" })
   .inputValidator((data: { userId: number }) => data)
   .handler(async (ctx) => {
+    const { requireUser } = await import("./portal-session.server");
     await requireUser(["admin"]);
     const db = (await import("./db.server")).default;
 
@@ -174,6 +100,7 @@ export const promoteUserToTeacherFn = createServerFn({ method: "POST" })
 export const deleteStudentFn = createServerFn({ method: "POST" })
   .inputValidator((data: { userId: number }) => data)
   .handler(async (ctx) => {
+    const { requireUser } = await import("./portal-session.server");
     await requireUser(["admin"]);
     const db = (await import("./db.server")).default;
 
@@ -200,6 +127,7 @@ export const deleteStudentFn = createServerFn({ method: "POST" })
 export const createUserFn = createServerFn({ method: "POST" })
   .inputValidator((data: { fullName: string; email: string; phone: string; password: string }) => data)
   .handler(async (ctx) => {
+    const { hashPassword, setSessionCookie } = await import("./portal-session.server");
     const db = (await import("./db.server")).default;
     const existingUser = db.prepare("SELECT user_id FROM users WHERE email = ?").get(ctx.data.email) as any;
     if (existingUser) throw new Error("Пользователь с таким email уже существует");
@@ -223,6 +151,7 @@ export const createUserFn = createServerFn({ method: "POST" })
   });
 
 export const getTeachersFn = createServerFn({ method: "GET" }).handler(async () => {
+  const { requireUser } = await import("./portal-session.server");
   await requireUser(["student", "admin", "teacher"]);
   const db = (await import("./db.server")).default;
   return db
@@ -241,6 +170,7 @@ export const getTeachersFn = createServerFn({ method: "GET" }).handler(async () 
 export const createEnrollmentRequestFn = createServerFn({ method: "POST" })
   .inputValidator((data: { programTitle: string; phone: string; comment?: string; preferredTeacherId?: number | null }) => data)
   .handler(async (ctx) => {
+    const { requireUser } = await import("./portal-session.server");
     const user = await requireUser(["student"]);
     const db = (await import("./db.server")).default;
 
@@ -280,10 +210,25 @@ export const createEnrollmentRequestFn = createServerFn({ method: "POST" })
         .join("\n"),
     );
 
+    // Do not fail request creation if SMTP is temporarily unavailable.
+    try {
+      const { sendEnrollmentRequestEmail } = await import("./email-notify.server");
+      await sendEnrollmentRequestEmail({
+        applicantName: user.full_name,
+        applicantEmail: user.email,
+        applicantPhone: ctx.data.phone,
+        programTitle: ctx.data.programTitle,
+        comment: ctx.data.comment,
+      });
+    } catch (emailError) {
+      console.error("Enrollment email notification error:", emailError);
+    }
+
     return { success: true };
   });
 
 export const getEnrollmentRequestsFn = createServerFn({ method: "GET" }).handler(async () => {
+  const { requireUser } = await import("./portal-session.server");
   await requireUser(["admin"]);
   const db = (await import("./db.server")).default;
   return db
@@ -322,6 +267,7 @@ export const getEnrollmentRequestsFn = createServerFn({ method: "GET" }).handler
 export const processEnrollmentRequestFn = createServerFn({ method: "POST" })
   .inputValidator((data: { requestId: number; action: "approve" | "reject" }) => data)
   .handler(async (ctx) => {
+    const { requireUser } = await import("./portal-session.server");
     await requireUser(["admin"]);
     const db = (await import("./db.server")).default;
 
@@ -372,6 +318,7 @@ export const processEnrollmentRequestFn = createServerFn({ method: "POST" })
   });
 
 export const getTeacherStudentsFn = createServerFn({ method: "GET" }).handler(async () => {
+  const { requireUser } = await import("./portal-session.server");
   const teacher = await requireUser(["teacher", "admin"]);
   const db = (await import("./db.server")).default;
 
@@ -422,6 +369,7 @@ export const getTeacherStudentsFn = createServerFn({ method: "GET" }).handler(as
 export const setStudentContentAccessFn = createServerFn({ method: "POST" })
   .inputValidator((data: { studentId: number; courseId: number; contentType: "theory" | "test" | "final_test"; enabled: boolean }) => data)
   .handler(async (ctx) => {
+    const { requireUser } = await import("./portal-session.server");
     const teacher = await requireUser(["teacher", "admin"]);
     const db = (await import("./db.server")).default;
 
@@ -454,26 +402,43 @@ export const setStudentContentAccessFn = createServerFn({ method: "POST" })
   });
 
 export const getTeacherContentAccessFn = createServerFn({ method: "GET" }).handler(async () => {
+  const { requireUser } = await import("./portal-session.server");
   const teacher = await requireUser(["teacher", "admin"]);
   const db = (await import("./db.server")).default;
 
-  const query = `
-    SELECT sca.user_id, sca.course_id, sca.content_type, sca.is_enabled
-    FROM student_content_access sca
-    JOIN courses c ON c.course_id = sca.course_id
-    WHERE c.teacher_id = ?
+  const contentTypesSql = `
+    SELECT 'theory' AS content_type
+    UNION ALL SELECT 'test'
+    UNION ALL SELECT 'final_test'
   `;
+
+  const baseSelect = `
+    SELECT
+      e.user_id,
+      e.course_id,
+      ct.content_type,
+      COALESCE(sca.is_enabled, 1) AS is_enabled
+    FROM enrollments e
+    JOIN courses c ON c.course_id = e.course_id
+    JOIN (${contentTypesSql}) ct
+    LEFT JOIN student_content_access sca
+      ON sca.user_id = e.user_id
+      AND sca.course_id = e.course_id
+      AND sca.content_type = ct.content_type
+    WHERE e.enrollment_status = 'active'
+  `;
+
   if (teacher.role_name === "admin") {
     return db
       .prepare(
         `
-      SELECT user_id, course_id, content_type, is_enabled
-      FROM student_content_access
+      ${baseSelect}
     `,
       )
       .all() as Array<{ user_id: number; course_id: number; content_type: "theory" | "test" | "final_test"; is_enabled: number }>;
   }
-  return db.prepare(query).all(teacher.user_id) as Array<{
+
+  return db.prepare(`${baseSelect} AND c.teacher_id = ?`).all(teacher.user_id) as Array<{
     user_id: number;
     course_id: number;
     content_type: "theory" | "test" | "final_test";
@@ -482,16 +447,30 @@ export const getTeacherContentAccessFn = createServerFn({ method: "GET" }).handl
 });
 
 export const getMyContentAccessFn = createServerFn({ method: "GET" }).handler(async () => {
+  const { requireUser } = await import("./portal-session.server");
   const user = await requireUser(["student"]);
   const db = (await import("./db.server")).default;
 
   return db
     .prepare(
       `
-      SELECT sca.course_id, sca.content_type, sca.is_enabled, c.title AS course_title
-      FROM student_content_access sca
-      JOIN courses c ON c.course_id = sca.course_id
-      WHERE sca.user_id = ?
+      SELECT
+        e.course_id,
+        ct.content_type,
+        COALESCE(sca.is_enabled, 1) AS is_enabled,
+        c.title AS course_title
+      FROM enrollments e
+      JOIN courses c ON c.course_id = e.course_id
+      JOIN (
+        SELECT 'theory' AS content_type
+        UNION ALL SELECT 'test'
+        UNION ALL SELECT 'final_test'
+      ) ct
+      LEFT JOIN student_content_access sca
+        ON sca.user_id = e.user_id
+        AND sca.course_id = e.course_id
+        AND sca.content_type = ct.content_type
+      WHERE e.user_id = ? AND e.enrollment_status = 'active'
     `,
     )
     .all(user.user_id) as Array<{
@@ -501,3 +480,116 @@ export const getMyContentAccessFn = createServerFn({ method: "GET" }).handler(as
     is_enabled: number;
   }>;
 });
+
+export const getMyModuleResultsFn = createServerFn({ method: "GET" })
+  .inputValidator((data: { contentType?: ModuleContentType } | undefined) => data)
+  .handler(async (ctx) => {
+    const { requireUser } = await import("./portal-session.server");
+    const user = await requireUser(["student"]);
+    const db = (await import("./db.server")).default;
+
+    if (ctx.data?.contentType) {
+      return db
+        .prepare(
+          `
+          SELECT direction_key, content_type, module_index, score, total_questions, is_passed
+          FROM student_module_results
+          WHERE user_id = ? AND content_type = ?
+        `,
+        )
+        .all(user.user_id, ctx.data.contentType) as Array<{
+        direction_key: string;
+        content_type: ModuleContentType;
+        module_index: number;
+        score: number;
+        total_questions: number;
+        is_passed: number;
+      }>;
+    }
+
+    return db
+      .prepare(
+        `
+        SELECT direction_key, content_type, module_index, score, total_questions, is_passed
+        FROM student_module_results
+        WHERE user_id = ?
+      `,
+      )
+      .all(user.user_id) as Array<{
+      direction_key: string;
+      content_type: ModuleContentType;
+      module_index: number;
+      score: number;
+      total_questions: number;
+      is_passed: number;
+    }>;
+  });
+
+export const saveMyModuleResultFn = createServerFn({ method: "POST" })
+  .inputValidator(
+    (data: {
+      directionKey: string;
+      contentType: ModuleContentType;
+      moduleIndex: number;
+      score: number;
+      totalQuestions: number;
+    }) => data,
+  )
+  .handler(async (ctx) => {
+    const { requireUser } = await import("./portal-session.server");
+    const user = await requireUser(["student"]);
+    const db = (await import("./db.server")).default;
+
+    const score = Math.max(0, Math.floor(Number(ctx.data.score)));
+    const totalQuestions = Math.max(1, Math.floor(Number(ctx.data.totalQuestions)));
+    const isPassed = score >= totalQuestions ? 1 : 0;
+
+    db.prepare(
+      `
+      INSERT INTO student_module_results (
+        user_id, direction_key, content_type, module_index, score, total_questions, is_passed, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+      ON CONFLICT(user_id, direction_key, content_type, module_index)
+      DO UPDATE SET
+        score = excluded.score,
+        total_questions = excluded.total_questions,
+        is_passed = excluded.is_passed,
+        updated_at = CURRENT_TIMESTAMP
+    `,
+    ).run(
+      user.user_id,
+      ctx.data.directionKey,
+      ctx.data.contentType,
+      ctx.data.moduleIndex,
+      score,
+      totalQuestions,
+      isPassed,
+    );
+
+    return { success: true, isPassed };
+  });
+
+export const getMaterialIndexFn = createServerFn({ method: "GET" }).handler(async () => {
+  const { requireUser } = await import("./portal-session.server");
+  await requireUser(["student", "teacher", "admin"]);
+  const { buildMaterialIndex } = await import("./material-index.server");
+  return buildMaterialIndex();
+});
+
+export const sendContactMessageFn = createServerFn({ method: "POST" })
+  .inputValidator((data: { name: string; email: string; message: string }) => data)
+  .handler(async (ctx) => {
+    const name = String(ctx.data.name ?? "").trim();
+    const email = String(ctx.data.email ?? "").trim();
+    const message = String(ctx.data.message ?? "").trim();
+    if (name.length < 2) throw new Error("Имя слишком короткое");
+    if (!email.includes("@")) throw new Error("Некорректный e-mail");
+    if (message.length < 5) throw new Error("Сообщение слишком короткое");
+
+    const { sendContactMessageEmail } = await import("./email-notify.server");
+    const result = await sendContactMessageEmail({ name, email, message });
+    if (!result.sent) {
+      throw new Error("Email-уведомления не настроены. Проверьте SMTP параметры.");
+    }
+    return { success: true };
+  });

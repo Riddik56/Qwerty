@@ -1,0 +1,130 @@
+<mxfile host="app.diagrams.net" modified="2026-05-13T10:55:00.000Z" agent="Cascade" version="24.7.17" type="device">
+  <diagram name="UML Use Case" id="uml-use-case-liquid-school">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="UML-диаграмма прецедентов образовательного портала ООО «Интерактив»" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="210" y="20" width="760" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="system" value="Образовательный портал" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8fafc;strokeColor=#334155;strokeWidth=2;fontSize=16;fontStyle=1;verticalAlign=top;spacingTop=12" vertex="1" parent="1">
+          <mxGeometry x="300" y="80" width="610" height="620" as="geometry" />
+        </mxCell>
+
+        <mxCell id="actor-guest" value="Гость" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14" vertex="1" parent="1">
+          <mxGeometry x="80" y="150" width="60" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-student" value="Слушатель" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14" vertex="1" parent="1">
+          <mxGeometry x="80" y="350" width="70" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-teacher" value="Преподаватель" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14" vertex="1" parent="1">
+          <mxGeometry x="1010" y="250" width="90" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-admin" value="Администратор" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontSize=14" vertex="1" parent="1">
+          <mxGeometry x="1005" y="500" width="100" height="110" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc-view-courses" value="Просмотр каталога курсов" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=13" vertex="1" parent="1">
+          <mxGeometry x="360" y="125" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-view-info" value="Просмотр информации о портале" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#2563eb;fontSize=13" vertex="1" parent="1">
+          <mxGeometry x="620" y="125" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-register" value="Регистрация" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=13" vertex="1" parent="1">
+          <mxGeometry x="390" y="220" width="150" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-login" value="Авторизация" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dcfce7;strokeColor=#16a34a;fontSize=13" vertex="1" parent="1">
+          <mxGeometry x="640" y="220" width="150" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-apply" value="Подача заявки на обучение" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontSize=13" vertex="1" parent="1">
+          <mxGeometry x="360" y="325" width="200" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-account" value="Просмотр личного кабинета" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontSize=13" vertex="1" parent="1">
+          <mxGeometry x="620" y="325" width="190" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-progress" value="Просмотр прогресса обучения" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#d97706;fontSize=13" vertex="1" parent="1">
+          <mxGeometry x="410" y="430" width="205" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-students" value="Просмотр списка слушателей" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ede9fe;strokeColor=#7c3aed;fontSize=13" vertex="1" parent="1">
+          <mxGeometry x="650" y="430" width="205" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-admin-stats" value="Просмотр статистики портала" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#dc2626;fontSize=13" vertex="1" parent="1">
+          <mxGeometry x="365" y="535" width="205" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-users" value="Управление пользователями" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fee2e2;strokeColor=#dc2626;fontSize=13" vertex="1" parent="1">
+          <mxGeometry x="625" y="535" width="205" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uc-logout" value="Выход из системы" style="ellipse;whiteSpace=wrap;html=1;fillColor=#e2e8f0;strokeColor=#475569;fontSize=13" vertex="1" parent="1">
+          <mxGeometry x="515" y="625" width="170" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-guest-courses" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-guest" target="uc-view-courses">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-guest-info" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-guest" target="uc-view-info">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-guest-register" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-guest" target="uc-register">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-guest-login" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-guest" target="uc-login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-student-login" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-student" target="uc-login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-student-apply" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-student" target="uc-apply">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-student-account" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-student" target="uc-account">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-student-progress" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-student" target="uc-progress">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-student-logout" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-student" target="uc-logout">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-teacher-login" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-teacher" target="uc-login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-teacher-account" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-teacher" target="uc-account">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-teacher-students" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-teacher" target="uc-students">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-teacher-logout" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-teacher" target="uc-logout">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e-admin-login" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-admin" target="uc-login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-admin-account" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-admin" target="uc-account">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-admin-stats" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-admin" target="uc-admin-stats">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-admin-users" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-admin" target="uc-users">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-admin-logout" style="endArrow=none;html=1;rounded=0;strokeColor=#334155" edge="1" parent="1" source="actor-admin" target="uc-logout">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="inc-apply-login" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;strokeColor=#64748b;fontSize=12" edge="1" parent="1" source="uc-apply" target="uc-login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="inc-account-login" value="&amp;lt;&amp;lt;include&amp;gt;&amp;gt;" style="endArrow=open;endFill=0;dashed=1;html=1;rounded=0;strokeColor=#64748b;fontSize=12" edge="1" parent="1" source="uc-account" target="uc-login">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

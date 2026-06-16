@@ -1,6 +1,6 @@
 export function SiteFooter() {
   return (
-    <footer className="px-3 sm:px-6 pb-6 pt-12 mt-16">
+    <footer className="px-3 sm:px-6 pb-6 pt-12 mt-auto">
       <div className="glass mx-auto max-w-7xl p-6 sm:p-8 grid gap-6 md:grid-cols-3">
         <div>
           <div className="font-display font-bold text-lg">Образовательная организация</div>

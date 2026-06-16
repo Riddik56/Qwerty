@@ -1,7 +1,7 @@
+import { PageShell } from "@/components/PageShell";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { PageShell } from "@/components/PageShell";
 import {
   getCurrentUserFn,
   getTeacherContentAccessFn,

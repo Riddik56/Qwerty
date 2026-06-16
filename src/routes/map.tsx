@@ -1,9 +1,9 @@
+import { PageShell } from "@/components/PageShell";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
-import { PageShell } from "@/components/PageShell";
-
+import { sendContactMessageFn } from "@/lib/portal-db";
 export const Route = createFileRoute("/map")({
   head: () => ({
     meta: [
@@ -37,7 +37,7 @@ const schedule = [
 function MapPage() {
   const [pending, setPending] = useState(false);
 
-  const submit = (e: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
     const parsed = schema.safeParse({
@@ -51,11 +51,20 @@ function MapPage() {
     }
     setPending(true);
     try {
+      await sendContactMessageFn({
+        data: {
+          name: parsed.data.name,
+          email: parsed.data.email,
+          message: parsed.data.message,
+        },
+      });
       const arr = JSON.parse(localStorage.getItem("contacts") || "[]");
       arr.push({ ...parsed.data, createdAt: new Date().toISOString() });
       localStorage.setItem("contacts", JSON.stringify(arr));
-      toast.success("Сообщение отправлено. Мы свяжемся с вами.");
+      toast.success("Сообщение отправлено на почту. Мы свяжемся с вами.");
       (e.target as HTMLFormElement).reset();
+    } catch (err: any) {
+      toast.error(err?.message || "Не удалось отправить сообщение");
     } finally {
       setPending(false);
     }
@@ -65,6 +74,7 @@ function MapPage() {
 
   return (
     <PageShell>
+      <div>
       <section className="mx-auto max-w-7xl">
         <div className="relative overflow-hidden rounded-[2rem] bg-slate-950 text-white shadow-2xl shadow-slate-400/30">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_22%,rgba(59,130,246,0.5),transparent_32%),radial-gradient(circle_at_86%_8%,rgba(20,184,166,0.32),transparent_28%),linear-gradient(135deg,#020617,#0f172a_55%,#172554)]" />
@@ -157,7 +167,7 @@ function MapPage() {
           <div className="text-sm font-semibold uppercase tracking-[0.22em] text-primary">Обратная связь</div>
           <h2 className="mt-3 font-display text-3xl font-extrabold">Напишите нам</h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            Заполните форму, и мы ответим в течение рабочего дня. Сообщение сохранится в локальном хранилище браузера для демонстрации работы формы.
+            Заполните форму, и мы ответим в течение рабочего дня. Сообщение будет отправлено на почту администратора.
           </p>
           <form onSubmit={submit} className="grid gap-3">
             <label className="grid gap-1.5">
@@ -178,6 +188,7 @@ function MapPage() {
           </form>
         </div>
       </section>
+      </div>
     </PageShell>
   );
 }

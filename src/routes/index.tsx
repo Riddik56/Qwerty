@@ -1,7 +1,8 @@
+import { PageShell } from "@/components/PageShell";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { GraduationCap, Check, ListChecks, Send } from "lucide-react";
 import { EnrollDialog } from "@/components/EnrollDialog";
-import { PageShell } from "@/components/PageShell";
 import { getCurrentUserFn, getMyCoursesFn } from "@/lib/portal-db";
 
 export const Route = createFileRoute("/")({
@@ -97,7 +98,7 @@ function Index() {
       }
     };
 
-    loadUserProgress();
+    void loadUserProgress();
     return () => {
       mounted = false;
     };
@@ -105,6 +106,7 @@ function Index() {
 
   return (
     <PageShell>
+      <div>
       <section className="mx-auto max-w-7xl">
         <div className="relative overflow-hidden rounded-[2rem] bg-slate-950 text-white shadow-2xl shadow-slate-400/30">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(59,130,246,0.45),transparent_32%),radial-gradient(circle_at_80%_0%,rgba(14,165,233,0.35),transparent_28%),linear-gradient(135deg,#020617,#0f172a_55%,#172554)]" />
@@ -130,7 +132,7 @@ function Index() {
                   className="rounded-2xl bg-white px-6 py-3 font-semibold text-slate-950 shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:bg-sky-50"
                 >
                   <span className="inline-flex items-center gap-2">
-                    <i className="fi fi-rr-graduation-cap" aria-hidden="true" />
+                    <GraduationCap className="h-4 w-4" aria-hidden="true" />
                     Записаться на обучение
                   </span>
                 </button>
@@ -139,7 +141,7 @@ function Index() {
                   className="rounded-2xl border border-white/15 bg-white/10 px-6 py-3 font-semibold text-white backdrop-blur transition hover:-translate-y-0.5 hover:bg-white/15"
                 >
                   <span className="inline-flex items-center gap-2">
-                    <i className="fi fi-rr-list-check" aria-hidden="true" />
+                    <ListChecks className="h-4 w-4" aria-hidden="true" />
                     Смотреть программы
                   </span>
                 </Link>
@@ -250,7 +252,7 @@ function Index() {
                   </div>
                   <button onClick={() => setEnrollOpen(true)} className="w-fit rounded-xl bg-white px-4 py-2 text-sm font-semibold text-slate-950 transition hover:-translate-y-0.5 hover:bg-sky-50">
                     <span className="inline-flex items-center gap-2">
-                      <i className="fi fi-rr-check" aria-hidden="true" />
+                      <Check className="h-4 w-4 shrink-0 text-primary" aria-hidden="true" />
                       Записаться
                     </span>
                   </button>
@@ -342,14 +344,17 @@ function Index() {
             className="w-fit rounded-2xl bg-white px-6 py-3 font-semibold text-primary transition hover:-translate-y-0.5 hover:bg-sky-50"
           >
             <span className="inline-flex items-center gap-2">
-              <i className="fi fi-rr-paper-plane" aria-hidden="true" />
+              <Send className="h-4 w-4" aria-hidden="true" />
               Оставить заявку
             </span>
           </button>
         </div>
       </section>
 
-      <EnrollDialog open={enrollOpen} program="Общая заявка на обучение" onClose={() => setEnrollOpen(false)} />
+      {enrollOpen ? (
+        <EnrollDialog open program="Общая заявка на обучение" onClose={() => setEnrollOpen(false)} />
+      ) : null}
+      </div>
     </PageShell>
   );
 }

@@ -135,6 +135,19 @@ CREATE TABLE activity_logs (
   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+CREATE TABLE student_module_results (
+  user_id INTEGER NOT NULL,
+  direction_key TEXT NOT NULL,
+  content_type TEXT NOT NULL CHECK (content_type IN ('test', 'final_test')),
+  module_index INTEGER NOT NULL CHECK (module_index >= 0),
+  score INTEGER NOT NULL DEFAULT 0 CHECK (score >= 0),
+  total_questions INTEGER NOT NULL DEFAULT 1 CHECK (total_questions > 0),
+  is_passed INTEGER NOT NULL DEFAULT 0 CHECK (is_passed IN (0, 1)),
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, direction_key, content_type, module_index),
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
+
 CREATE INDEX idx_users_role_id ON users(role_id);
 CREATE INDEX idx_courses_category_id ON courses(category_id);
 CREATE INDEX idx_courses_teacher_id ON courses(teacher_id);
@@ -150,6 +163,7 @@ CREATE INDEX idx_submissions_user_id ON assignment_submissions(user_id);
 CREATE INDEX idx_progress_enrollment_id ON course_progress(enrollment_id);
 CREATE INDEX idx_progress_material_id ON course_progress(material_id);
 CREATE INDEX idx_logs_user_id ON activity_logs(user_id);
+CREATE INDEX idx_module_results_user_id ON student_module_results(user_id);
 
 INSERT INTO roles (role_name, description) VALUES
   ('student', 'Слушатель образовательной платформы'),

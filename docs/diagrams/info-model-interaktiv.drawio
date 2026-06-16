@@ -1,0 +1,165 @@
+<mxfile host="app.diagrams.net" agent="Cursor">
+  <diagram id="info-model" name="Информационная модель">
+    <mxGraphModel dx="725" dy="381" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="user" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=12;spacingLeft=8;spacingTop=5;" value="&lt;b&gt;Пользователь&lt;/b&gt;&lt;hr&gt;id_пользователя (PK)&lt;br&gt;id_роли (FK)&lt;br&gt;фио&lt;br&gt;email&lt;br&gt;телефон&lt;br&gt;хэш_пароля&lt;br&gt;статус_аккаунта" vertex="1">
+          <mxGeometry height="145" width="210" x="265" y="175" as="geometry" />
+        </mxCell>
+        <mxCell id="role" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=12;spacingLeft=8;spacingTop=5;" value="&lt;b&gt;Роль&lt;/b&gt;&lt;hr&gt;id_роли (PK)&lt;br&gt;название_роли&lt;br&gt;описание" vertex="1">
+          <mxGeometry height="75" width="180" x="280" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="log" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=12;spacingLeft=8;spacingTop=5;" value="&lt;b&gt;Журнал действий&lt;/b&gt;&lt;hr&gt;id_записи (PK)&lt;br&gt;id_пользователя (FK)&lt;br&gt;тип_действия&lt;br&gt;описание&lt;br&gt;время" vertex="1">
+          <mxGeometry height="105" width="210" x="205" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="request" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=12;spacingLeft=8;spacingTop=5;" value="&lt;b&gt;Заявка на обучение&lt;/b&gt;&lt;hr&gt;id_заявки (PK)&lt;br&gt;id_пользователя (FK)&lt;br&gt;id_курса (FK)&lt;br&gt;фио_заявителя&lt;br&gt;email_заявителя&lt;br&gt;статус_заявки&lt;br&gt;дата_создания" vertex="1">
+          <mxGeometry height="130" width="210" y="675" as="geometry" />
+        </mxCell>
+        <mxCell id="cat" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=12;spacingLeft=8;spacingTop=5;" value="&lt;b&gt;Категория курсов&lt;/b&gt;&lt;hr&gt;id_категории (PK)&lt;br&gt;название&lt;br&gt;описание" vertex="1">
+          <mxGeometry height="80" width="200" x="505" y="207.5" as="geometry" />
+        </mxCell>
+        <mxCell id="course" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=12;spacingLeft=8;spacingTop=5;" value="&lt;b&gt;Курс&lt;/b&gt;&lt;hr&gt;id_курса (PK)&lt;br&gt;id_категории (FK)&lt;br&gt;id_преподавателя (FK)&lt;br&gt;название&lt;br&gt;описание&lt;br&gt;длительность_часов&lt;br&gt;стоимость&lt;br&gt;статус_курса" vertex="1">
+          <mxGeometry height="155" width="230" x="475" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="module" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=12;spacingLeft=8;spacingTop=5;" value="&lt;b&gt;Модуль курса&lt;/b&gt;&lt;hr&gt;id_модуля (PK)&lt;br&gt;id_курса (FK)&lt;br&gt;название_модуля&lt;br&gt;описание&lt;br&gt;порядок_сортировки" vertex="1">
+          <mxGeometry height="105" width="220" x="240" y="687.5" as="geometry" />
+        </mxCell>
+        <mxCell id="material" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=12;spacingLeft=8;spacingTop=5;" value="&lt;b&gt;Учебный материал&lt;/b&gt;&lt;hr&gt;id_материала (PK)&lt;br&gt;id_модуля (FK)&lt;br&gt;название&lt;br&gt;тип_материала&lt;br&gt;содержание&lt;br&gt;ссылка" vertex="1">
+          <mxGeometry height="115" width="220" x="230.0025" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="enroll" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=12;spacingLeft=8;spacingTop=5;" value="&lt;b&gt;Зачисление&lt;/b&gt;&lt;hr&gt;id_зачисления (PK)&lt;br&gt;id_слушателя (FK)&lt;br&gt;id_курса (FK)&lt;br&gt;статус_зачисления&lt;br&gt;процент_прогресса&lt;br&gt;дата_зачисления" vertex="1">
+          <mxGeometry height="120" width="230" x="490" y="680" as="geometry" />
+        </mxCell>
+        <mxCell id="access" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=12;spacingLeft=8;spacingTop=5;" value="&lt;b&gt;Доступ к разделам&lt;/b&gt;&lt;hr&gt;id_слушателя (FK)&lt;br&gt;id_курса (FK)&lt;br&gt;тип_раздела&lt;br&gt;доступ_включен" vertex="1">
+          <mxGeometry height="95" width="220" x="750" y="692.5" as="geometry" />
+        </mxCell>
+        <mxCell id="progress" parent="1" style="verticalAlign=top;align=left;overflow=fill;html=1;whiteSpace=wrap;fillColor=#ffffff;strokeColor=#000000;fontFamily=Arial;fontSize=12;spacingLeft=8;spacingTop=5;" value="&lt;b&gt;Прогресс обучения&lt;/b&gt;&lt;hr&gt;id_прогресса (PK)&lt;br&gt;id_зачисления (FK)&lt;br&gt;id_материала (FK)&lt;br&gt;материал_изучен&lt;br&gt;дата_завершения" vertex="1">
+          <mxGeometry height="105" width="220" x="390.0025" y="1000" as="geometry" />
+        </mxCell>
+        <mxCell id="r1" edge="1" parent="1" source="role" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="user">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="370" y="163" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r2" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="log">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="290" y="332" />
+              <mxPoint x="310" y="408" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r3" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="request">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="330" y="334" />
+              <mxPoint x="445" y="370" />
+              <mxPoint x="445" y="625" />
+              <mxPoint x="55" y="663" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r4" edge="1" parent="1" source="cat" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="course">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="605" y="332" />
+              <mxPoint x="645" y="408" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r5" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="course">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="370" y="336" />
+              <mxPoint x="535" y="408" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r5t" parent="1" style="text;html=1;fontSize=10;fontFamily=Arial;strokeColor=none;fillColor=none;" value="преподаватель" vertex="1">
+          <mxGeometry height="18" width="90" x="1030" y="7.105427357601002e-15" as="geometry" />
+        </mxCell>
+        <mxCell id="r6" edge="1" parent="1" source="course" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="module">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="562.5" y="589" />
+              <mxPoint x="350" y="663" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r7" edge="1" parent="1" source="module" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="material">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="350" y="817" />
+              <mxPoint x="400" y="840" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r8" edge="1" parent="1" source="course" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="request">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="507.5" y="587" />
+              <mxPoint x="155" y="663" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r9" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="enroll">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="410" y="334" />
+              <mxPoint x="735" y="370" />
+              <mxPoint x="735" y="625" />
+              <mxPoint x="660" y="663" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r10" edge="1" parent="1" source="course" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="enroll">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="617.5" y="589" />
+              <mxPoint x="550" y="663" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r11" edge="1" parent="1" source="user" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="access">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="450" y="332" />
+              <mxPoint x="765" y="370" />
+              <mxPoint x="765" y="625" />
+              <mxPoint x="912.5" y="663" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r12" edge="1" parent="1" source="course" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;" target="access">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="672.5" y="587" />
+              <mxPoint x="807.5" y="663" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r14" edge="1" parent="1" source="enroll" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;entryX=0.682;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="progress">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="605" y="817" />
+              <mxPoint x="561.5625" y="855" />
+              <mxPoint x="560" y="950" />
+              <mxPoint x="550" y="970" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="r15" edge="1" parent="1" source="material" style="edgeStyle=orthogonalEdgeStyle;html=1;strokeColor=#000000;endArrow=ERmany;startArrow=ERone;startFill=0;rounded=0;noEdgeStyle=1;orthogonal=1;entryX=0.182;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" target="progress">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="410" y="990" />
+              <mxPoint x="420" y="990" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

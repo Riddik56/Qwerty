@@ -1,8 +1,8 @@
+import { PageShell } from "@/components/PageShell";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
-import { PageShell } from "@/components/PageShell";
 import { createUserFn } from "@/lib/portal-db";
 
 export const Route = createFileRoute("/register")({
@@ -21,6 +21,24 @@ const schema = z.object({
   phone: z.string().trim().min(5, "Укажите телефон").max(30),
   password: z.string().min(4, "Минимум 4 символа").max(50),
 });
+
+const termsPathSegments = [
+  "Материал",
+  "Профессиональная переподготовка",
+  "Специалист по пожарной профилактике",
+  "Материал",
+  "ЖУРНАЛЫ",
+  "Журнал-трехступенчатого-контроля-за-состоянием-охраны-и-условий-безопасности-труда-на-рабочих-местах.doc",
+];
+const privacyPathSegments = [
+  "Материал",
+  "Профессиональная переподготовка",
+  "Специалист по пожарной профилактике",
+  "Материал",
+  "ПОЛИТИКА ПО ОТ, П  и ПБ.doc",
+];
+const termsDownloadUrl = `/materials/${termsPathSegments.map((segment) => encodeURIComponent(segment)).join("/")}`;
+const privacyDownloadUrl = `/materials/${privacyPathSegments.map((segment) => encodeURIComponent(segment)).join("/")}`;
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -137,11 +155,11 @@ function Register() {
               />
               <span className="text-sm text-muted-foreground">
                 Я согласен с{" "}
-                <a href="#" className="text-primary hover:underline">
+                <a href={termsDownloadUrl} download target="_blank" rel="noreferrer" className="text-primary hover:underline">
                   условиями использования
                 </a>{" "}
                 и{" "}
-                <a href="#" className="text-primary hover:underline">
+                <a href={privacyDownloadUrl} download target="_blank" rel="noreferrer" className="text-primary hover:underline">
                   политикой конфиденциальности
                 </a>
               </span>

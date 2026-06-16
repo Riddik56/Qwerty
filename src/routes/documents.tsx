@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
-import { PageShell, PageHero } from "@/components/PageShell";
+import { PageHero, PageShell } from "@/components/PageShell";
 
 export const Route = createFileRoute("/documents")({
   head: () => ({
@@ -50,6 +50,7 @@ function Documents() {
 
   return (
     <PageShell>
+      <div>
       <PageHero eyebrow="Архив" title="Документы" description="Все официальные документы организации в свободном доступе." />
 
       <section className="mx-auto max-w-7xl mt-8">
@@ -101,6 +102,7 @@ function Documents() {
           <div className="glass p-8 text-center text-muted-foreground">Документы не найдены.</div>
         )}
       </section>
+      </div>
     </PageShell>
   );
 }

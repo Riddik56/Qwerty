@@ -26,13 +26,7 @@ export const Route = createRootRoute({
       { title: "Образовательная организация" },
       { name: "description", content: "Современная образовательная организация" },
     ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      {
-        rel: "stylesheet",
-        href: "https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css",
-      },
-    ],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
