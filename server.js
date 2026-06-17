@@ -5,27 +5,26 @@ import { Hono } from 'hono'
 import workerEntry from './dist/server/server.js'
 
 const app = new Hono()
+const executionContext = {
+  waitUntil: () => {},
+  passThroughOnException: () => {},
+}
 
-// Разрешаем раздавать статику
-app.use('/assets/*', serveStatic({ root: './dist/client' }))
-app.use('/*', serveStatic({ root: './dist/client' }))
-
-// Все остальные запросы отдаем сгенерированному worker entry
+// TanStack SSR + server functions must run before static fallback.
 app.all('*', async (c) => {
-  const env = process.env
-  // Создаем контекст выполнения, похожий на cloudflare
-  const executionContext = {
-    waitUntil: (promise) => {},
-    passThroughOnException: () => {}
-  }
-
   try {
-    const response = await workerEntry.fetch(c.req.raw, env, executionContext)
-    return response
+    const response = await workerEntry.fetch(c.req.raw, process.env, executionContext)
+    if (response.status !== 404) return response
   } catch (error) {
     console.error('Render request failed', error)
     return c.text('Internal Server Error', 500)
   }
+
+  if (c.req.method === 'GET' || c.req.method === 'HEAD') {
+    return serveStatic({ root: './dist/client' })(c, () => c.notFound())
+  }
+
+  return c.notFound()
 })
 
 const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000

@@ -52,6 +52,18 @@ export const Route = createFileRoute("/ai")({
   component: AiPage,
 });
 
+function buildHistoryForRequest(messages: Message[]): Message[] {
+  return messages
+    .filter(
+      (m) =>
+        m.role === "user" ||
+        (m.role === "assistant" &&
+          m.content !== INITIAL_ASSISTANT_MESSAGE.content &&
+          !isLikelyHtml(m.content)),
+    )
+    .slice(-6);
+}
+
 function AiPage() {
   const [messages, setMessages] = useState<Message[]>(() => {
     if (typeof window === "undefined") return [INITIAL_ASSISTANT_MESSAGE];
@@ -65,6 +77,13 @@ function AiPage() {
   });
   const [input, setInput] = useState("");
   const [pending, setPending] = useState(false);
+
+  useEffect(() => {
+    // Wake up Render free-tier instance before the first chat request.
+    void import("@/lib/auth-fns")
+      .then(({ getCurrentUserFn }) => getCurrentUserFn())
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -88,14 +107,14 @@ function AiPage() {
       const result = await askAiAssistantFn({
         data: {
           message: text,
-          history: newHistory.filter((m) => m.role !== "assistant" || m.content.length > 0),
+          history: buildHistoryForRequest(newHistory),
         },
       });
       setMessages((prev) => [...prev, { role: "assistant", content: normalizeAssistantReply(result.answer) }]);
     } catch (err: any) {
       const message = typeof err?.message === "string" ? err.message : "Ошибка ИИ-помощника";
       const shortMessage = isLikelyHtml(message)
-        ? "ИИ-помощник недоступен. Проверьте OPENROUTER_API_KEY на Render."
+        ? "Сервер ещё просыпается или временно недоступен. Подождите 30–60 секунд и попробуйте снова."
         : message.slice(0, 200);
       toast.error(shortMessage);
       setMessages((prev) => [

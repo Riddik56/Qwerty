@@ -92,10 +92,13 @@ export async function callOpenRouter(data: { message: string; history?: ChatMess
     throw new Error("OPENROUTER_API_KEY не настроен на сервере");
   }
 
-  const cleanedHistory = (data.history || []).slice(-8).map((m) => ({
-    role: m.role,
-    content: m.content.slice(0, 2000),
-  }));
+  const cleanedHistory = (data.history || [])
+    .filter((m) => m.content && !isLikelyHtml(m.content))
+    .slice(-6)
+    .map((m) => ({
+      role: m.role,
+      content: m.content.slice(0, 1200),
+    }));
 
   const requestBody = JSON.stringify({
     model: "deepseek/deepseek-chat-v3-0324",
@@ -119,7 +122,7 @@ ${SITE_CONTEXT}
 
   const makeRequest = async () => {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 20000);
+    const timeout = setTimeout(() => controller.abort(), 12000);
     try {
       return await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
