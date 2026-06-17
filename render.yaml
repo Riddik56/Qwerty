@@ -16,6 +16,12 @@ services:
         value: production
       - key: OPENROUTER_API_KEY
         sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM
+        sync: false
+      - key: NOTIFY_EMAIL_TO
+        sync: false
       - key: SMTP_HOST
         sync: false
       - key: SMTP_PORT
@@ -27,6 +33,4 @@ services:
       - key: SMTP_PASS
         sync: false
       - key: SMTP_FROM
-        sync: false
-      - key: NOTIFY_EMAIL_TO
         sync: false

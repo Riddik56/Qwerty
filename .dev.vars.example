@@ -1,11 +1,17 @@
 OPENROUTER_API_KEY=your_openrouter_key_here
 
-# Email notifications (required on Render for enrollment/contact alerts)
-# Yandex example:
-SMTP_HOST=smtp.yandex.ru
-SMTP_PORT=465
-SMTP_SECURE=true
-SMTP_USER=your_mail@yandex.ru
-SMTP_PASS=your_app_password
-SMTP_FROM=Интерактив <your_mail@yandex.ru>
-NOTIFY_EMAIL_TO=your_mail@yandex.ru
+# Email on Render: SMTP (Gmail) is blocked — use Resend HTTP API instead.
+# 1) Sign up at https://resend.com
+# 2) Create API key
+# 3) For testing use RESEND_FROM=onboarding@resend.dev
+RESEND_API_KEY=re_your_key_here
+RESEND_FROM=onboarding@resend.dev
+NOTIFY_EMAIL_TO=artemzaharov735@gmail.com
+
+# Local dev only (SMTP works on your computer):
+# SMTP_HOST=smtp.gmail.com
+# SMTP_PORT=465
+# SMTP_SECURE=true
+# SMTP_USER=your@gmail.com
+# SMTP_PASS=your_app_password
+# SMTP_FROM=Интерактив <your@gmail.com>

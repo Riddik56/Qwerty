@@ -76,7 +76,7 @@ export function EnrollDialog({
     }
     setPending(true);
     try {
-      await createEnrollmentRequestFn({
+      const result = await createEnrollmentRequestFn({
         data: {
           programTitle: program,
           phone: parsed.data.phone,
@@ -84,7 +84,11 @@ export function EnrollDialog({
           preferredTeacherId: parsed.data.preferredTeacherId ? Number(parsed.data.preferredTeacherId) : null,
         },
       });
-      toast.success("Заявка отправлена. Мы свяжемся с вами.");
+      if (result.emailSent) {
+        toast.success("Заявка отправлена. Уведомление отправлено на почту.");
+      } else {
+        toast.success("Заявка сохранена. Письмо на почту не отправилось — проверьте RESEND_API_KEY на Render.");
+      }
       onClose();
     } finally {
       setPending(false);

@@ -11,6 +11,8 @@ type MailConfig = {
   to: string;
 };
 
+type SendResult = { sent: true } | { sent: false; reason: "config_missing" | "send_failed" };
+
 function readDevVar(key: string): string | null {
   try {
     const filePath = join(process.cwd(), ".dev.vars");
@@ -42,10 +44,8 @@ function getEnvOrDevVar(key: string): string | null {
   return fromDev ? normalizeEnvValue(fromDev) : null;
 }
 
-function getMissingMailConfigKeys(): string[] {
-  return ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM", "NOTIFY_EMAIL_TO"].filter(
-    (key) => !getEnvOrDevVar(key),
-  );
+function isRenderHost(): boolean {
+  return Boolean(process.env.RENDER || process.env.RENDER_EXTERNAL_URL);
 }
 
 function getMailConfig(): MailConfig | null {
@@ -79,6 +79,9 @@ function createTransport(config: MailConfig) {
       host: config.host,
       port: config.port,
       secure: config.secure,
+      connectionTimeout: 5000,
+      greetingTimeout: 5000,
+      socketTimeout: 8000,
       auth: {
         user: config.user,
         pass: config.pass,
@@ -95,6 +98,118 @@ function createTransport(config: MailConfig) {
   );
 }
 
+async function sendWithTimeout<T>(promise: Promise<T>, timeoutMs = 8000): Promise<T> {
+  let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timeoutHandle = setTimeout(() => reject(new Error("SMTP timeout")), timeoutMs);
+  });
+
+  try {
+    return await Promise.race([promise, timeoutPromise]);
+  } finally {
+    if (timeoutHandle) clearTimeout(timeoutHandle);
+  }
+}
+
+async function sendViaResend(payload: {
+  subject: string;
+  text: string;
+  to: string;
+  replyTo?: string;
+}): Promise<SendResult> {
+  const apiKey = getEnvOrDevVar("RESEND_API_KEY");
+  const from =
+    getEnvOrDevVar("RESEND_FROM") || getEnvOrDevVar("SMTP_FROM") || "onboarding@resend.dev";
+
+  if (!apiKey) {
+    return { sent: false, reason: "config_missing" };
+  }
+
+  try {
+    const body: Record<string, unknown> = {
+      from,
+      to: [payload.to],
+      subject: payload.subject,
+      text: payload.text,
+    };
+    if (payload.replyTo) body.reply_to = payload.replyTo;
+
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const details = await response.text();
+      console.error("Resend API error:", response.status, details);
+      return { sent: false, reason: "send_failed" };
+    }
+
+    return { sent: true };
+  } catch (error) {
+    console.error("Resend email notification error:", error);
+    return { sent: false, reason: "send_failed" };
+  }
+}
+
+async function sendViaSmtp(payload: {
+  subject: string;
+  text: string;
+  replyTo?: string;
+}): Promise<SendResult> {
+  const config = getMailConfig();
+  if (!config) {
+    return { sent: false, reason: "config_missing" };
+  }
+
+  try {
+    const transporter = await createTransport(config);
+    await sendWithTimeout(
+      transporter.sendMail({
+        from: config.from,
+        to: config.to,
+        subject: payload.subject,
+        text: payload.text,
+        replyTo: payload.replyTo,
+      }),
+    );
+    return { sent: true };
+  } catch (error) {
+    console.error("SMTP email notification error:", error);
+    return { sent: false, reason: "send_failed" };
+  }
+}
+
+async function sendNotificationEmail(payload: {
+  subject: string;
+  text: string;
+  replyTo?: string;
+}): Promise<SendResult> {
+  const to = getEnvOrDevVar("NOTIFY_EMAIL_TO");
+  if (!to) {
+    console.warn("Email notifications skipped: NOTIFY_EMAIL_TO is not set");
+    return { sent: false, reason: "config_missing" };
+  }
+
+  // Render blocks outbound SMTP (ports 465/587) — use Resend HTTP API in production.
+  if (getEnvOrDevVar("RESEND_API_KEY")) {
+    return sendViaResend({ ...payload, to });
+  }
+
+  if (isRenderHost()) {
+    console.warn(
+      "Email skipped on Render: SMTP is blocked. Add RESEND_API_KEY (https://resend.com) to Environment.",
+    );
+    return { sent: false, reason: "config_missing" };
+  }
+
+  return sendViaSmtp(payload);
+}
+
 export async function sendEnrollmentRequestEmail(payload: {
   applicantName: string;
   applicantEmail: string;
@@ -102,42 +217,19 @@ export async function sendEnrollmentRequestEmail(payload: {
   programTitle: string;
   comment?: string;
 }) {
-  const config = getMailConfig();
-  if (!config) {
-    const missing = getMissingMailConfigKeys();
-    console.warn(
-      `Email notifications skipped: incomplete SMTP config (missing: ${missing.join(", ") || "unknown"})`,
-    );
-    return { sent: false, reason: "config_missing" as const };
-  }
+  const subject = `Новая заявка: ${payload.programTitle}`;
+  const text = [
+    "На сайте оставлена новая заявка.",
+    "",
+    `Направление: ${payload.programTitle}`,
+    `ФИО: ${payload.applicantName}`,
+    `Email: ${payload.applicantEmail}`,
+    `Телефон: ${payload.applicantPhone}`,
+    `Комментарий: ${payload.comment?.trim() || "—"}`,
+    `Время: ${new Date().toLocaleString("ru-RU")}`,
+  ].join("\n");
 
-  try {
-    const transporter = await createTransport(config);
-
-    const subject = `Новая заявка: ${payload.programTitle}`;
-    const text = [
-      "На сайте оставлена новая заявка.",
-      "",
-      `Направление: ${payload.programTitle}`,
-      `ФИО: ${payload.applicantName}`,
-      `Email: ${payload.applicantEmail}`,
-      `Телефон: ${payload.applicantPhone}`,
-      `Комментарий: ${payload.comment?.trim() || "—"}`,
-      `Время: ${new Date().toLocaleString("ru-RU")}`,
-    ].join("\n");
-
-    await transporter.sendMail({
-      from: config.from,
-      to: config.to,
-      subject,
-      text,
-    });
-
-    return { sent: true as const };
-  } catch (error) {
-    console.error("Enrollment email notification error:", error);
-    return { sent: false, reason: "send_failed" as const };
-  }
+  return sendNotificationEmail({ subject, text });
 }
 
 export async function sendContactMessageEmail(payload: {
@@ -145,42 +237,28 @@ export async function sendContactMessageEmail(payload: {
   email: string;
   message: string;
 }) {
-  const config = getMailConfig();
-  if (!config) {
-    const missing = getMissingMailConfigKeys();
-    console.warn(
-      `Email notifications skipped: incomplete SMTP config (missing: ${missing.join(", ") || "unknown"})`,
-    );
-    return { sent: false, reason: "config_missing" as const };
+  const subject = `Обратная связь: сообщение от ${payload.name}`;
+  const text = [
+    "Новое сообщение из формы обратной связи.",
+    "",
+    `Имя: ${payload.name}`,
+    `Email: ${payload.email}`,
+    "",
+    "Сообщение:",
+    payload.message,
+    "",
+    `Время: ${new Date().toLocaleString("ru-RU")}`,
+  ].join("\n");
+
+  const result = await sendNotificationEmail({
+    subject,
+    text,
+    replyTo: payload.email,
+  });
+
+  if (!result.sent && result.reason === "config_missing") {
+    throw new Error("Email-уведомления не настроены. Проверьте RESEND_API_KEY или SMTP параметры.");
   }
 
-  try {
-    const transporter = await createTransport(config);
-
-    const subject = `Обратная связь: сообщение от ${payload.name}`;
-    const text = [
-      "Новое сообщение из формы обратной связи.",
-      "",
-      `Имя: ${payload.name}`,
-      `Email: ${payload.email}`,
-      "",
-      "Сообщение:",
-      payload.message,
-      "",
-      `Время: ${new Date().toLocaleString("ru-RU")}`,
-    ].join("\n");
-
-    await transporter.sendMail({
-      from: config.from,
-      to: config.to,
-      subject,
-      text,
-      replyTo: payload.email,
-    });
-
-    return { sent: true as const };
-  } catch (error) {
-    console.error("Contact email notification error:", error);
-    return { sent: false, reason: "send_failed" as const };
-  }
+  return result;
 }

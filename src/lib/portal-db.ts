@@ -224,7 +224,7 @@ export const createEnrollmentRequestFn = createServerFn({ method: "POST" })
       console.warn(`Enrollment email not sent (${emailResult.reason}) for ${ctx.data.programTitle}`);
     }
 
-    return { success: true };
+    return { success: true, emailSent: emailResult.sent };
   });
 
 export const getEnrollmentRequestsFn = createServerFn({ method: "GET" }).handler(async () => {
