@@ -1,8 +1,25 @@
 import { createRouter, useRouter } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { routeTree } from "./routeTree.gen";
 
 function DefaultErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
+  const chunkLoadFailed =
+    typeof error?.message === "string" &&
+    /(Failed to fetch dynamically imported module|Importing a module script failed|ChunkLoadError)/i.test(
+      error.message,
+    );
+
+  useEffect(() => {
+    if (!chunkLoadFailed || typeof window === "undefined") return;
+
+    // After deploy, a stale HTML can point to removed chunks.
+    // Reload once to fetch the new asset manifest.
+    const guardKey = "chunk-reload-once";
+    if (window.sessionStorage.getItem(guardKey) === "1") return;
+    window.sessionStorage.setItem(guardKey, "1");
+    window.location.reload();
+  }, [chunkLoadFailed]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -27,6 +44,11 @@ function DefaultErrorComponent({ error, reset }: { error: Error; reset: () => vo
         <p className="mt-2 text-sm text-muted-foreground">
           An unexpected error occurred. Please try again.
         </p>
+        {chunkLoadFailed && (
+          <p className="mt-2 text-sm text-muted-foreground">
+            Обновлена версия сайта. Если страница не открылась автоматически, нажмите Try again или обновите вкладку.
+          </p>
+        )}
         {import.meta.env.DEV && error.message && (
           <pre className="mt-4 max-h-40 overflow-auto rounded-md bg-muted p-3 text-left font-mono text-xs text-destructive">
             {error.message}
