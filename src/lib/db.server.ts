@@ -1,8 +1,67 @@
 import Database from "better-sqlite3";
-import { readFileSync } from "fs";
+import { existsSync, mkdirSync, readFileSync } from "fs";
 import { join } from "path";
 
-const dbPath = join(process.cwd(), "portal.db");
+type SeedUser = {
+  role: "student" | "admin" | "teacher";
+  fullName: string;
+  email: string;
+  phone: string;
+  passwordHash: string;
+};
+
+const SEED_USERS: SeedUser[] = [
+  {
+    role: "student",
+    fullName: "Артем",
+    email: "user1@mail.ru",
+    phone: "+79223475849",
+    passwordHash:
+      "scrypt$e157604f646107c95c285697f4fcf157$37144956d12d255db142e4ab68c9f715c6e912d7d8764b833f03bae3508ea61ff05d35340459812d2f5be29c9121fbe747cc5f4710c38d2b7d93fbd1932f0553",
+  },
+  {
+    role: "admin",
+    fullName: "Костюков Матвей Витальевич",
+    email: "Zahar83s@mail.ru",
+    phone: "+79228744883",
+    passwordHash:
+      "scrypt$02332f8a23ab083c504e2d32031a677a$98ba68aa7270881952a19464a15917c4f62b5a3efe7f6fe4cd9aaf9df556d18731dc92d0f8847715efb47fc3dc3b6b50f81750360b8953ea9574d36baa52f413",
+  },
+];
+
+function getDbDirectory(): string {
+  const configured = process.env.PORTAL_DB_DIR?.trim();
+  if (configured) {
+    mkdirSync(configured, { recursive: true });
+    return configured;
+  }
+  return process.cwd();
+}
+
+function ensureSeedUsers(db: Database.Database) {
+  const insert = db.prepare(`
+    INSERT INTO users (role_id, full_name, email, phone, password_hash, account_status)
+    SELECT (SELECT role_id FROM roles WHERE role_name = ?), ?, ?, ?, ?, 'active'
+    WHERE NOT EXISTS (SELECT 1 FROM users WHERE lower(email) = lower(?))
+  `);
+
+  for (const user of SEED_USERS) {
+    const result = insert.run(
+      user.role,
+      user.fullName,
+      user.email,
+      user.phone,
+      user.passwordHash,
+      user.email,
+    );
+    if (result.changes > 0) {
+      console.log(`Seeded user: ${user.email} (${user.role})`);
+    }
+  }
+}
+
+const dbDirectory = getDbDirectory();
+const dbPath = join(dbDirectory, "portal.db");
 const schemaPath = join(process.cwd(), "database-schema.sqlite.sql");
 const db = new Database(dbPath);
 
@@ -44,6 +103,8 @@ try {
     );
   `);
 
+  ensureSeedUsers(db);
+
   const seedPath = join(process.cwd(), "database-seed.sqlite.sql");
   if (existsSync(seedPath)) {
     db.exec(readFileSync(seedPath, "utf-8"));
@@ -52,4 +113,5 @@ try {
   console.error("DB Init Error:", e);
 }
 
+console.log(`SQLite database: ${dbPath}`);
 export default db;

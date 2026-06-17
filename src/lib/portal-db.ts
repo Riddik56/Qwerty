@@ -12,13 +12,14 @@ export const loginUserFn = createServerFn({ method: "POST" })
   .handler(async (ctx) => {
     const { verifyPassword, setSessionCookie } = await import("./portal-session.server");
     const db = (await import("./db.server")).default;
+    const email = ctx.data.email.trim().toLowerCase();
     const user = db
       .prepare(`
       SELECT u.user_id, u.full_name, u.email, u.password_hash, r.role_name 
       FROM users u JOIN roles r ON u.role_id = r.role_id 
-      WHERE u.email = ? AND u.account_status = 'active'
+      WHERE lower(u.email) = ? AND u.account_status = 'active'
     `)
-      .get(ctx.data.email) as DbUser | undefined;
+      .get(email) as DbUser | undefined;
 
     if (!user) throw new Error("Пользователь не найден или заблокирован");
     if (!verifyPassword(ctx.data.password, user.password_hash)) throw new Error("Неверный пароль");
