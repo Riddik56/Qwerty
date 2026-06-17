@@ -1,12 +1,19 @@
+version: "1"
 services:
   - type: web
     name: liquid-school-portal
-    env: node
-    buildCommand: "npm install && npm run build"
-    startCommand: "node server.js"
+    runtime: node
+    region: frankfurt
+    plan: free
+    # NODE_ENV=production skips devDependencies; Vite is required for build.
+    buildCommand: NPM_CONFIG_PRODUCTION=false npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
     envVars:
       - key: NODE_VERSION
-        value: "20"
+        value: "22.14.0"
+      - key: NODE_ENV
+        value: production
       - key: OPENROUTER_API_KEY
         sync: false
       - key: SMTP_HOST

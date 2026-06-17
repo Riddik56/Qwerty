@@ -6,4 +6,18 @@
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-export default defineConfig();
+// better-sqlite3 uses CJS bindings — must stay external on Node (Render + server.js).
+const nativeDb = ["better-sqlite3", "bindings", "file-uri-to-path"];
+
+// Cloudflare worker bundle breaks Node hosting; disable for Render.
+export default defineConfig({
+  cloudflare: false,
+  vite: {
+    ssr: { external: nativeDb },
+    build: {
+      rollupOptions: {
+        external: nativeDb,
+      },
+    },
+  },
+});
