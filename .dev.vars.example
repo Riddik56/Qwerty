@@ -1,8 +1,11 @@
 OPENROUTER_API_KEY=your_openrouter_key_here
-SMTP_HOST=smtp.example.com
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER=your_smtp_login
-SMTP_PASS=your_smtp_password
-SMTP_FROM="School Portal <no-reply@example.com>"
-NOTIFY_EMAIL_TO=owner@example.com
+
+# Email notifications (required on Render for enrollment/contact alerts)
+# Yandex example:
+SMTP_HOST=smtp.yandex.ru
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=your_mail@yandex.ru
+SMTP_PASS=your_app_password
+SMTP_FROM=Интерактив <your_mail@yandex.ru>
+NOTIFY_EMAIL_TO=your_mail@yandex.ru

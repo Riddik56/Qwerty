@@ -24,10 +24,28 @@ function readDevVar(key: string): string | null {
   }
 }
 
+function normalizeEnvValue(value: string): string {
+  const trimmed = value.trim();
+  if (
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+  ) {
+    return trimmed.slice(1, -1).trim();
+  }
+  return trimmed;
+}
+
 function getEnvOrDevVar(key: string): string | null {
   const fromEnv = process.env[key];
-  if (fromEnv && fromEnv.trim().length > 0) return fromEnv.trim();
-  return readDevVar(key);
+  if (fromEnv && fromEnv.trim().length > 0) return normalizeEnvValue(fromEnv);
+  const fromDev = readDevVar(key);
+  return fromDev ? normalizeEnvValue(fromDev) : null;
+}
+
+function getMissingMailConfigKeys(): string[] {
+  return ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM", "NOTIFY_EMAIL_TO"].filter(
+    (key) => !getEnvOrDevVar(key),
+  );
 }
 
 function getMailConfig(): MailConfig | null {
@@ -55,6 +73,28 @@ function getMailConfig(): MailConfig | null {
   };
 }
 
+function createTransport(config: MailConfig) {
+  return import("nodemailer").then((nodemailer) =>
+    nodemailer.createTransport({
+      host: config.host,
+      port: config.port,
+      secure: config.secure,
+      auth: {
+        user: config.user,
+        pass: config.pass,
+      },
+      ...(config.secure
+        ? {}
+        : {
+            requireTLS: true,
+            tls: {
+              minVersion: "TLSv1.2",
+            },
+          }),
+    }),
+  );
+}
+
 export async function sendEnrollmentRequestEmail(payload: {
   applicantName: string;
   applicantEmail: string;
@@ -64,41 +104,40 @@ export async function sendEnrollmentRequestEmail(payload: {
 }) {
   const config = getMailConfig();
   if (!config) {
-    console.warn("Email notifications skipped: SMTP config is incomplete");
+    const missing = getMissingMailConfigKeys();
+    console.warn(
+      `Email notifications skipped: incomplete SMTP config (missing: ${missing.join(", ") || "unknown"})`,
+    );
     return { sent: false, reason: "config_missing" as const };
   }
 
-  const nodemailer = await import("nodemailer");
-  const transporter = nodemailer.createTransport({
-    host: config.host,
-    port: config.port,
-    secure: config.secure,
-    auth: {
-      user: config.user,
-      pass: config.pass,
-    },
-  });
+  try {
+    const transporter = await createTransport(config);
 
-  const subject = `Новая заявка: ${payload.programTitle}`;
-  const text = [
-    "На сайте оставлена новая заявка.",
-    "",
-    `Направление: ${payload.programTitle}`,
-    `ФИО: ${payload.applicantName}`,
-    `Email: ${payload.applicantEmail}`,
-    `Телефон: ${payload.applicantPhone}`,
-    `Комментарий: ${payload.comment?.trim() || "—"}`,
-    `Время: ${new Date().toLocaleString("ru-RU")}`,
-  ].join("\n");
+    const subject = `Новая заявка: ${payload.programTitle}`;
+    const text = [
+      "На сайте оставлена новая заявка.",
+      "",
+      `Направление: ${payload.programTitle}`,
+      `ФИО: ${payload.applicantName}`,
+      `Email: ${payload.applicantEmail}`,
+      `Телефон: ${payload.applicantPhone}`,
+      `Комментарий: ${payload.comment?.trim() || "—"}`,
+      `Время: ${new Date().toLocaleString("ru-RU")}`,
+    ].join("\n");
 
-  await transporter.sendMail({
-    from: config.from,
-    to: config.to,
-    subject,
-    text,
-  });
+    await transporter.sendMail({
+      from: config.from,
+      to: config.to,
+      subject,
+      text,
+    });
 
-  return { sent: true as const };
+    return { sent: true as const };
+  } catch (error) {
+    console.error("Enrollment email notification error:", error);
+    return { sent: false, reason: "send_failed" as const };
+  }
 }
 
 export async function sendContactMessageEmail(payload: {
@@ -108,41 +147,40 @@ export async function sendContactMessageEmail(payload: {
 }) {
   const config = getMailConfig();
   if (!config) {
-    console.warn("Email notifications skipped: SMTP config is incomplete");
+    const missing = getMissingMailConfigKeys();
+    console.warn(
+      `Email notifications skipped: incomplete SMTP config (missing: ${missing.join(", ") || "unknown"})`,
+    );
     return { sent: false, reason: "config_missing" as const };
   }
 
-  const nodemailer = await import("nodemailer");
-  const transporter = nodemailer.createTransport({
-    host: config.host,
-    port: config.port,
-    secure: config.secure,
-    auth: {
-      user: config.user,
-      pass: config.pass,
-    },
-  });
+  try {
+    const transporter = await createTransport(config);
 
-  const subject = `Обратная связь: сообщение от ${payload.name}`;
-  const text = [
-    "Новое сообщение из формы обратной связи.",
-    "",
-    `Имя: ${payload.name}`,
-    `Email: ${payload.email}`,
-    "",
-    "Сообщение:",
-    payload.message,
-    "",
-    `Время: ${new Date().toLocaleString("ru-RU")}`,
-  ].join("\n");
+    const subject = `Обратная связь: сообщение от ${payload.name}`;
+    const text = [
+      "Новое сообщение из формы обратной связи.",
+      "",
+      `Имя: ${payload.name}`,
+      `Email: ${payload.email}`,
+      "",
+      "Сообщение:",
+      payload.message,
+      "",
+      `Время: ${new Date().toLocaleString("ru-RU")}`,
+    ].join("\n");
 
-  await transporter.sendMail({
-    from: config.from,
-    to: config.to,
-    subject,
-    text,
-    replyTo: payload.email,
-  });
+    await transporter.sendMail({
+      from: config.from,
+      to: config.to,
+      subject,
+      text,
+      replyTo: payload.email,
+    });
 
-  return { sent: true as const };
+    return { sent: true as const };
+  } catch (error) {
+    console.error("Contact email notification error:", error);
+    return { sent: false, reason: "send_failed" as const };
+  }
 }

@@ -212,17 +212,16 @@ export const createEnrollmentRequestFn = createServerFn({ method: "POST" })
     );
 
     // Do not fail request creation if SMTP is temporarily unavailable.
-    try {
-      const { sendEnrollmentRequestEmail } = await import("./email-notify.server");
-      await sendEnrollmentRequestEmail({
-        applicantName: user.full_name,
-        applicantEmail: user.email,
-        applicantPhone: ctx.data.phone,
-        programTitle: ctx.data.programTitle,
-        comment: ctx.data.comment,
-      });
-    } catch (emailError) {
-      console.error("Enrollment email notification error:", emailError);
+    const { sendEnrollmentRequestEmail } = await import("./email-notify.server");
+    const emailResult = await sendEnrollmentRequestEmail({
+      applicantName: user.full_name,
+      applicantEmail: user.email,
+      applicantPhone: ctx.data.phone,
+      programTitle: ctx.data.programTitle,
+      comment: ctx.data.comment,
+    });
+    if (!emailResult.sent) {
+      console.warn(`Enrollment email not sent (${emailResult.reason}) for ${ctx.data.programTitle}`);
     }
 
     return { success: true };
