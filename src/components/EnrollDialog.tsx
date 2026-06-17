@@ -86,8 +86,10 @@ export function EnrollDialog({
       });
       if (result.emailSent) {
         toast.success("Заявка отправлена. Уведомление отправлено на почту.");
+      } else if (result.emailReason === "config_missing") {
+        toast.success("Заявка сохранена. Добавьте на Render: RESEND_API_KEY, RESEND_FROM, NOTIFY_EMAIL_TO.");
       } else {
-        toast.success("Заявка сохранена. Письмо на почту не отправилось — проверьте RESEND_API_KEY на Render.");
+        toast.success("Заявка сохранена. Письмо не отправилось — проверьте Resend (ключ и email получателя).");
       }
       onClose();
     } finally {
