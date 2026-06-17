@@ -81,13 +81,15 @@ CREATE TABLE enrollments (
   enrollment_id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL,
   course_id INTEGER NOT NULL,
+  teacher_id INTEGER,
   enrollment_status TEXT NOT NULL DEFAULT 'active' CHECK (enrollment_status IN ('active', 'completed', 'cancelled')),
   progress_percent REAL NOT NULL DEFAULT 0 CHECK (progress_percent >= 0 AND progress_percent <= 100),
   enrolled_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   completed_at TEXT,
   UNIQUE (user_id, course_id),
   FOREIGN KEY (user_id) REFERENCES users(user_id),
-  FOREIGN KEY (course_id) REFERENCES courses(course_id)
+  FOREIGN KEY (course_id) REFERENCES courses(course_id),
+  FOREIGN KEY (teacher_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE assignments (
@@ -157,6 +159,7 @@ CREATE INDEX idx_requests_course_id ON enrollment_requests(course_id);
 CREATE INDEX idx_requests_user_id ON enrollment_requests(user_id);
 CREATE INDEX idx_enrollments_user_id ON enrollments(user_id);
 CREATE INDEX idx_enrollments_course_id ON enrollments(course_id);
+CREATE INDEX idx_enrollments_teacher_id ON enrollments(teacher_id);
 CREATE INDEX idx_assignments_module_id ON assignments(module_id);
 CREATE INDEX idx_submissions_assignment_id ON assignment_submissions(assignment_id);
 CREATE INDEX idx_submissions_user_id ON assignment_submissions(user_id);

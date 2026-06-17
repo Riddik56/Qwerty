@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import {
   getCurrentUserFn,
   getTeacherContentAccessFn,
+  getTeacherStudentModuleResultsFn,
   getTeacherStudentsFn,
   setStudentContentAccessFn,
 } from "@/lib/portal-db";
@@ -26,6 +27,17 @@ type AccessRow = {
   is_enabled: number;
 };
 
+type ModuleResultRow = {
+  user_id: number;
+  full_name: string;
+  direction_key: string;
+  content_type: "test" | "final_test";
+  module_index: number;
+  score: number;
+  total_questions: number;
+  updated_at: string;
+};
+
 const contentTypes: Array<{ key: "theory" | "test" | "final_test"; label: string }> = [
   { key: "theory", label: "Теория" },
   { key: "test", label: "Тест" },
@@ -40,13 +52,14 @@ export const Route = createFileRoute("/teacher")({
 
     const students = (await getTeacherStudentsFn()) as TeacherStudent[];
     const accessRows = (await getTeacherContentAccessFn()) as AccessRow[];
-    return { students, accessRows };
+    const moduleResults = (await getTeacherStudentModuleResultsFn()) as ModuleResultRow[];
+    return { students, accessRows, moduleResults };
   },
   component: TeacherPage,
 });
 
 function TeacherPage() {
-  const { students: initialStudents, accessRows: initialAccessRows } = Route.useRouteContext();
+  const { students: initialStudents, accessRows: initialAccessRows, moduleResults } = Route.useRouteContext();
   const [students] = useState(initialStudents);
   const [accessRows, setAccessRows] = useState(initialAccessRows);
   const [loadingKey, setLoadingKey] = useState<string | null>(null);
@@ -85,8 +98,46 @@ function TeacherPage() {
         <div className="rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-xl backdrop-blur sm:p-10">
           <h1 className="font-display text-3xl font-extrabold">Кабинет преподавателя</h1>
           <p className="mt-2 text-muted-foreground">
-            Управляйте доступом слушателей к материалам и отслеживайте их прогресс по вашим курсам.
+            Управляйте доступом слушателей к материалам и отслеживайте прогресс только тех пользователей, которые выбрали вас преподавателем.
           </p>
+
+          <div className="mt-6 rounded-3xl border border-slate-200 bg-slate-50 p-5">
+            <h2 className="font-display text-2xl font-bold">Проверка заданий слушателей</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Ниже показаны результаты модулей (промежуточных и итоговых тестов) ваших студентов.
+            </p>
+            <div className="mt-4 grid gap-3">
+              {moduleResults.length === 0 && (
+                <div className="rounded-2xl bg-white p-4 text-sm text-muted-foreground">
+                  Пока нет отправленных результатов от слушателей, закрепленных за вами.
+                </div>
+              )}
+              {moduleResults.slice(0, 40).map((result) => {
+                const passed = result.score >= result.total_questions;
+                return (
+                  <article key={`${result.user_id}-${result.direction_key}-${result.content_type}-${result.module_index}`} className="rounded-2xl bg-white p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="font-semibold">{result.full_name}</div>
+                      <span
+                        className={`rounded-xl px-2 py-1 text-xs font-semibold ${
+                          passed ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                        }`}
+                      >
+                        {passed ? "Зачтено" : "Нужна доработка"}
+                      </span>
+                    </div>
+                    <div className="mt-1 text-sm text-muted-foreground">
+                      {result.content_type === "final_test" ? "Итоговый тест" : "Промежуточный тест"} · модуль{" "}
+                      {result.module_index + 1} · {result.direction_key}
+                    </div>
+                    <div className="mt-2 text-sm">
+                      Результат: <span className="font-semibold">{result.score}/{result.total_questions}</span>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
 
           <div className="mt-8 grid gap-4">
             {grouped.length === 0 && (

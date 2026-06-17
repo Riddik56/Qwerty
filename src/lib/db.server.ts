@@ -60,6 +60,11 @@ function ensureSeedUsers(db: Database.Database) {
   }
 }
 
+function columnExists(db: Database.Database, tableName: string, columnName: string): boolean {
+  const columns = db.prepare(`PRAGMA table_info(${tableName})`).all() as Array<{ name: string }>;
+  return columns.some((column) => column.name === columnName);
+}
+
 const dbDirectory = getDbDirectory();
 const dbPath = join(dbDirectory, "portal.db");
 const schemaPath = join(process.cwd(), "database-schema.sqlite.sql");
@@ -101,6 +106,26 @@ try {
       PRIMARY KEY (user_id, direction_key, content_type, module_index),
       FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
     );
+  `);
+
+  if (!columnExists(db, "enrollments", "teacher_id")) {
+    db.exec("ALTER TABLE enrollments ADD COLUMN teacher_id INTEGER REFERENCES users(user_id)");
+  }
+
+  db.exec(`
+    CREATE INDEX IF NOT EXISTS idx_enrollments_teacher_id
+    ON enrollments(teacher_id);
+  `);
+
+  // Backfill legacy rows: if enrollment teacher is empty, reuse course teacher.
+  db.exec(`
+    UPDATE enrollments
+    SET teacher_id = (
+      SELECT c.teacher_id
+      FROM courses c
+      WHERE c.course_id = enrollments.course_id
+    )
+    WHERE teacher_id IS NULL;
   `);
 
   ensureSeedUsers(db);

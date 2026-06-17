@@ -36,7 +36,7 @@ export const getMyCoursesFn = createServerFn({ method: "GET" })
     return db
       .prepare(`
       SELECT c.course_id, c.title, e.progress_percent, e.enrollment_status,
-             (SELECT full_name FROM users WHERE user_id = c.teacher_id) as teacher_name
+             (SELECT full_name FROM users WHERE user_id = COALESCE(e.teacher_id, c.teacher_id)) as teacher_name
       FROM enrollments e
       JOIN courses c ON e.course_id = c.course_id
       WHERE e.user_id = ?
@@ -297,18 +297,40 @@ export const processEnrollmentRequestFn = createServerFn({ method: "POST" })
 
     const preferredTeacherMatch = request.comment?.match(/preferred_teacher_id:(\d+)/);
     const preferredTeacherId = preferredTeacherMatch ? Number(preferredTeacherMatch[1]) : null;
+    let assignedTeacherId: number | null = null;
 
     if (preferredTeacherId) {
-      db.prepare("UPDATE courses SET teacher_id = ? WHERE course_id = ?").run(preferredTeacherId, request.course_id);
+      const selectedTeacher = db
+        .prepare(
+          `
+          SELECT u.user_id
+          FROM users u
+          JOIN roles r ON r.role_id = u.role_id
+          WHERE u.user_id = ? AND r.role_name = 'teacher' AND u.account_status = 'active'
+        `,
+        )
+        .get(preferredTeacherId) as { user_id: number } | undefined;
+
+      if (!selectedTeacher) {
+        throw new Error("Выбранный преподаватель недоступен");
+      }
+      assignedTeacherId = selectedTeacher.user_id;
+    } else {
+      const courseTeacher = db
+        .prepare("SELECT teacher_id FROM courses WHERE course_id = ?")
+        .get(request.course_id) as { teacher_id: number | null } | undefined;
+      assignedTeacherId = courseTeacher?.teacher_id ?? null;
     }
 
     db.prepare(
       `
-      INSERT INTO enrollments (user_id, course_id, enrollment_status, progress_percent)
-      VALUES (?, ?, 'active', 0)
-      ON CONFLICT(user_id, course_id) DO NOTHING
+      INSERT INTO enrollments (user_id, course_id, teacher_id, enrollment_status, progress_percent)
+      VALUES (?, ?, ?, 'active', 0)
+      ON CONFLICT(user_id, course_id) DO UPDATE SET
+        teacher_id = excluded.teacher_id,
+        enrollment_status = 'active'
     `,
-    ).run(request.user_id, request.course_id);
+    ).run(request.user_id, request.course_id, assignedTeacherId);
 
     db.prepare("UPDATE enrollment_requests SET request_status = 'approved', processed_at = CURRENT_TIMESTAMP WHERE request_id = ?").run(
       request.request_id,
@@ -334,7 +356,7 @@ export const getTeacherStudentsFn = createServerFn({ method: "GET" }).handler(as
     FROM enrollments e
     JOIN users u ON u.user_id = e.user_id
     JOIN courses c ON c.course_id = e.course_id
-    WHERE c.teacher_id = ?
+    WHERE e.teacher_id = ?
     ORDER BY c.title, u.full_name
   `;
 
@@ -342,7 +364,7 @@ export const getTeacherStudentsFn = createServerFn({ method: "GET" }).handler(as
   if (teacherId === null) {
     return db
       .prepare(
-        query.replace("WHERE c.teacher_id = ?", "WHERE c.teacher_id IS NOT NULL"),
+        query.replace("WHERE e.teacher_id = ?", "WHERE e.teacher_id IS NOT NULL"),
       )
       .all() as Array<{
       user_id: number;
@@ -376,9 +398,8 @@ export const setStudentContentAccessFn = createServerFn({ method: "POST" })
     const enrollment = db
       .prepare(
         `
-      SELECT c.teacher_id
+      SELECT e.teacher_id
       FROM enrollments e
-      JOIN courses c ON c.course_id = e.course_id
       WHERE e.user_id = ? AND e.course_id = ?
     `,
       )
@@ -419,7 +440,6 @@ export const getTeacherContentAccessFn = createServerFn({ method: "GET" }).handl
       ct.content_type,
       COALESCE(sca.is_enabled, 1) AS is_enabled
     FROM enrollments e
-    JOIN courses c ON c.course_id = e.course_id
     JOIN (${contentTypesSql}) ct
     LEFT JOIN student_content_access sca
       ON sca.user_id = e.user_id
@@ -438,7 +458,7 @@ export const getTeacherContentAccessFn = createServerFn({ method: "GET" }).handl
       .all() as Array<{ user_id: number; course_id: number; content_type: "theory" | "test" | "final_test"; is_enabled: number }>;
   }
 
-  return db.prepare(`${baseSelect} AND c.teacher_id = ?`).all(teacher.user_id) as Array<{
+  return db.prepare(`${baseSelect} AND e.teacher_id = ?`).all(teacher.user_id) as Array<{
     user_id: number;
     course_id: number;
     content_type: "theory" | "test" | "final_test";
@@ -524,6 +544,52 @@ export const getMyModuleResultsFn = createServerFn({ method: "GET" })
       is_passed: number;
     }>;
   });
+
+export const getTeacherStudentModuleResultsFn = createServerFn({ method: "GET" }).handler(async () => {
+  const { requireUser } = await import("./portal-session.server");
+  const teacher = await requireUser(["teacher", "admin"]);
+  const db = (await import("./db.server")).default;
+
+  const baseQuery = `
+    SELECT DISTINCT
+      r.user_id,
+      u.full_name,
+      r.direction_key,
+      r.content_type,
+      r.module_index,
+      r.score,
+      r.total_questions,
+      r.updated_at
+    FROM student_module_results r
+    JOIN users u ON u.user_id = r.user_id
+    JOIN enrollments e ON e.user_id = r.user_id
+    WHERE e.enrollment_status = 'active'
+  `;
+
+  if (teacher.role_name === "admin") {
+    return db.prepare(`${baseQuery} AND e.teacher_id IS NOT NULL ORDER BY r.updated_at DESC`).all() as Array<{
+      user_id: number;
+      full_name: string;
+      direction_key: string;
+      content_type: "test" | "final_test";
+      module_index: number;
+      score: number;
+      total_questions: number;
+      updated_at: string;
+    }>;
+  }
+
+  return db.prepare(`${baseQuery} AND e.teacher_id = ? ORDER BY r.updated_at DESC`).all(teacher.user_id) as Array<{
+    user_id: number;
+    full_name: string;
+    direction_key: string;
+    content_type: "test" | "final_test";
+    module_index: number;
+    score: number;
+    total_questions: number;
+    updated_at: string;
+  }>;
+});
 
 export const saveMyModuleResultFn = createServerFn({ method: "POST" })
   .inputValidator(
